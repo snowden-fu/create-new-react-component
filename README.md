@@ -5,7 +5,7 @@ A command-line interface (CLI) tool to quickly generate React components with op
 ## Installation
 
 ```bash
-npm install -g create-component
+npm install -g create-new-react-component
 ```
 
 ## Usage
