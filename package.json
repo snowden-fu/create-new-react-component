@@ -9,6 +9,9 @@
   "bin": {
     "create-component": "index.js"
   },
+  "dependencies": {
+    "commander": "^2.20.3"
+  },
   "author": "",
   "license": "ISC"
 }
