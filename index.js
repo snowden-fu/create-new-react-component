@@ -7,7 +7,7 @@ const path = require('path');
 const program = new commander.Command();
 
 program
-  .argument('<componentName>', 'Name of the component to create')
+  .arguments('<componentName>', 'Name of the component to create')
   .option('--withStyles', 'Create a CSS file for the component')
   .option('--style <style>', 'Choose the file style (js or ts)', 'js')
   .action(createComponent);
