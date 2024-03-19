@@ -25,11 +25,11 @@ ${options.withStyles ? `import './${componentName}.css';` : ''}
 
 ${options.style === 'ts' ? `interface ${componentName}Props {}` : ''}
 
-const ${componentName}${options.style === 'ts' ? `: React.FC<${componentName}Props>` : ''} = (props) => {
+function ${componentName}(${options.style === 'ts' ? '{}:Props' : 'props'}) {
   return (
-    <div className="${componentName}">
+    <>
       {/* Add your component content here */}
-    </div>
+    </>
   );
 };
 

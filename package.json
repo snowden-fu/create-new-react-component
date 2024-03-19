@@ -1,17 +1,22 @@
 {
   "name": "create-new-react-component",
-  "version": "1.0.2",
-  "description": "",
+  "version": "1.0.3",
+  "description": "an utility to create a new react component with a single command",
   "main": "index.js",
   "scripts": {
-    "create-component": "node index.js"
+    "create-new-react-component": "node index.js"
   },
   "bin": {
-    "create-component": "index.js"
+    "create-new-react-component": "index.js"
   },
   "dependencies": {
     "commander": "^2.20.3"
   },
-  "author": "",
+  "author": {
+    "name": "Snowden Fu",
+    "email": "snowden.fu+github@gmail.com",
+    "url": "https://github.com/snowden-fu",
+    "github": "snowden-fu"
+  },
   "license": "ISC"
 }

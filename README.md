@@ -1,4 +1,4 @@
-# create-component
+# create-new-react-component
 
 A command-line interface (CLI) tool to quickly generate React components with optional TypeScript support and CSS styles.
 
@@ -10,7 +10,7 @@ npm install -g create-new-react-component
 
 ## Usage
 ```bash 
-create-component <componentName> [options]
+create-new-react-component <componentName> [options]
 ```
 
 ## Options
