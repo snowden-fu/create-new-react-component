@@ -7,6 +7,13 @@ const path = require('path');
 const program = new commander.Command();
 
 program
+  .name('create-new-react-component')
+  .usage('<componentName> [options]')
+  .version('1.0.0')
+  .description(
+    "Create a new React component with an optional CSS file. " +
+    "The component will be created in a new directory with the same name as the component."
+  )
   .arguments('<componentName>', 'Name of the component to create')
   .option('--withStyles', 'Create a CSS file for the component')
   .option('--style <style>', 'Choose the file style (js or ts)', 'js')
