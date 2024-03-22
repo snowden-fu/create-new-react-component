@@ -18,5 +18,16 @@
     "url": "https://github.com/snowden-fu",
     "github": "snowden-fu"
   },
+  "keywords": [
+    "react",
+    "component",
+    "create",
+    "new",
+    "utility",
+    "command",
+    "cli",
+    "tool",
+    "generator"
+  ],
   "license": "ISC"
 }
