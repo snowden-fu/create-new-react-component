@@ -23,7 +23,7 @@ function createComponent(componentName, options) {
   const componentFileContent = `import React from 'react';
 ${options.withStyles ? `import './${componentName}.css';` : ''}
 
-${options.style === 'ts' ? `interface ${componentName}Props {}` : ''}
+${options.style === 'ts' ? `interface Props {}` : ''}
 
 function ${componentName}(${options.style === 'ts' ? '{}:Props' : 'props'}) {
   return (
