@@ -1,6 +1,6 @@
 {
   "name": "create-new-react-component",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "an utility to create a new react component with a single command",
   "main": "index.js",
   "scripts": {
