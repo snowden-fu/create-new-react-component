@@ -47,7 +47,10 @@ export default ${componentName};
 .${componentName} {
 }
 `;
-
+  if (fs.existsSync(componentDir)) {
+    console.error(`Component ${componentName} already exists`);
+    return;
+  }
   try {
     fs.mkdirSync(componentDir);
     fs.writeFileSync(indexFilePath, indexFileContent);
