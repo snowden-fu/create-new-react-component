@@ -4,7 +4,8 @@
   "description": "an utility to create a new react component with a single command",
   "main": "index.js",
   "scripts": {
-    "create-new-react-component": "node index.js"
+    "create-new-react-component": "node index.js",
+    "test": "jest"
   },
   "bin": {
     "create-new-react-component": "index.js"
@@ -29,5 +30,8 @@
     "tool",
     "generator"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
