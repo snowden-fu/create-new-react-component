@@ -27,21 +27,9 @@ function createComponent(componentName, options) {
 
   const indexFileContent = `export { default } from './${componentName}';`;
 
-  const componentFileContent = `import React from 'react';
-${options.withStyles ? `import './${componentName}.css';` : ''}
-
-${options.style === 'ts' ? `interface Props {}` : ''}
-
-function ${componentName}(${options.style === 'ts' ? '{}:Props' : 'props'}) {
-  return (
-    <>
-      {/* Add your component content here */}
-    </>
-  );
-};
-
-export default ${componentName};
-`;
+  const ComponentFileContent = require('./ComponentFileContent');
+  const componentFileContent = new ComponentFileContent(componentName, options.withStyles, options.style);
+  const componentFileContentContent = componentFileContent.generateComponentContent();
 
   const stylesFileContent = `/* Add your component styles here */
 .${componentName} {
@@ -54,7 +42,7 @@ export default ${componentName};
   try {
     fs.mkdirSync(componentDir);
     fs.writeFileSync(indexFilePath, indexFileContent);
-    fs.writeFileSync(componentFilePath, componentFileContent);
+    fs.writeFileSync(componentFilePath, componentFileContentContent);
     if (options.withStyles) {
       fs.writeFileSync(stylesFilePath, stylesFileContent);
     }
