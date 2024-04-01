@@ -15,4 +15,12 @@ describe('ComponentFileContent', () => {
     it('should throw an error if no componentName is provided', () => {
         expect(() => new ComponentFileContent()).toThrow('Component name is required');
     })
+    it('should initialize with custom values', () => {
+        const componentFileContent = new ComponentFileContent(componenetName, true, 'ts', true, true);
+        expect(componentFileContent.componentName).toBe(componenetName);
+        expect(componentFileContent.hasStyles).toBe(true);
+        expect(componentFileContent.style).toBe('ts');
+        expect(componentFileContent.hasProps).toBe(true);
+        expect(componentFileContent.hasImportReact).toBe(true);
+    })
 })
