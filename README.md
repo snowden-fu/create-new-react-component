@@ -32,3 +32,9 @@ create-component MyComponent --style ts
 # Create a TypeScript component with styles
 create-component MyComponent --withStyles --style ts
 ```
+
+
+## References
+
+- [A simple, customizable utility for adding new React components to your project.](https://www.npmjs.com/package/new-component)
+- [Delightful React File/Directory Structure](https://www.joshwcomeau.com/react/file-structure/#introduction)
