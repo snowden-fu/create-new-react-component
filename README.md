@@ -21,16 +21,16 @@ create-new-react-component <componentName> [options]
 ## Examples
 ```bash
 # Create a JavaScript component without styles
-create-component MyComponent
+create-new-react-component MyComponent
 
 # Create a JavaScript component with styles
-create-component MyComponent --withStyles
+create-new-react-component MyComponent --withStyles
 
 # Create a TypeScript component without styles
-create-component MyComponent --style ts
+create-new-react-component MyComponent --style ts
 
 # Create a TypeScript component with styles
-create-component MyComponent --withStyles --style ts
+create-new-react-component MyComponent --withStyles --style ts
 ```
 
 
