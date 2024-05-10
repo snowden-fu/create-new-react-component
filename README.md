@@ -5,7 +5,7 @@ A command-line interface (CLI) tool to quickly generate React components with op
 ## Installation
 
 ```bash
-npm install -g create-new-react-component
+npm install create-new-react-component --save-dev
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ create-new-react-component <componentName> [options]
 ## Options
 
 - --withStyles: Create a CSS file for the component
-- --style <style>: Choose the file style (js or ts), default is js
+- --lang <style>: Choose the file style (js or ts), default is js
 
 ## Examples
 ```bash
@@ -27,10 +27,10 @@ create-new-react-component MyComponent
 create-new-react-component MyComponent --withStyles
 
 # Create a TypeScript component without styles
-create-new-react-component MyComponent --style ts
+create-new-react-component MyComponent --lang ts
 
 # Create a TypeScript component with styles
-create-new-react-component MyComponent --withStyles --style ts
+create-new-react-component MyComponent --withStyles --lang ts
 ```
 
 

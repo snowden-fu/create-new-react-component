@@ -16,19 +16,19 @@ program
   )
   .arguments('<componentName>', 'Name of the component to create')
   .option('--withStyles', 'Create a CSS file for the component')
-  .option('--style <style>', 'Choose the file style (js or ts)', 'js')
+  .option('--lang <lang>', 'Choose the file style (js or ts)', 'js')
   .action(createComponent);
 
 function createComponent(componentName, options) {
   const componentDir = path.join(process.cwd(), componentName);
-  const indexFilePath = path.join(componentDir, `index.${options.style}`);
-  const componentFilePath = path.join(componentDir, `${componentName}.${options.style}x`);
+  const indexFilePath = path.join(componentDir, `index.${options.lang}`);
+  const componentFilePath = path.join(componentDir, `${componentName}.${options.lang}x`);
   const stylesFilePath = path.join(componentDir, `${componentName}.css`);
 
   const indexFileContent = `export { default } from './${componentName}';`;
 
   const ComponentFileContent = require('./ComponentFileContent');
-  const componentFileContent = new ComponentFileContent(componentName, options.withStyles, options.style);
+  const componentFileContent = new ComponentFileContent(componentName, options.withStyles, options.lang);
   const componentFileContentContent = componentFileContent.generateComponentContent();
 
   const stylesFileContent = `/* Add your component styles here */
@@ -46,7 +46,7 @@ function createComponent(componentName, options) {
     if (options.withStyles) {
       fs.writeFileSync(stylesFilePath, stylesFileContent);
     }
-    console.log(`Component ${componentName} created successfully${options.withStyles ? ' with styles' : ''} (${options.style})`);
+    console.log(`Component ${componentName} created successfully${options.withStyles ? ' with language' : ''} (${options.lang})`);
   } catch (err) {
     console.error(`Error creating component ${componentName}:`, err);
   }
