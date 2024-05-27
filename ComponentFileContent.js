@@ -46,11 +46,11 @@ class ComponentFileContent {
   }
   // generate the part of "import React from 'react'";
   #generateImportReact() {
-    return this.isImportReact ? `import React from 'react';\n` : "";
+    return this.#hasImportReact ? `import React from 'react';\n` : "";
   }
   // generate the part of props, considering if it is a ts file and if it is with props
   #generateProps() {
-    if (this.style === "ts" && this.isWithProps) {
+    if (this.style === "ts" && this.#hasProps) {
       return `interface Props {}\n`;
     }
     return "";
@@ -60,11 +60,10 @@ class ComponentFileContent {
     const importReactContent = this.#generateImportReact();
     const propsObjectContent = this.#generateProps();
     let propsParamContent = "";
-    if (this.isWithProps) {
+    if (this.#hasProps) {
       propsParamContent = this.style === "ts" ? "{}:Props" : "props";
     }
-    this.#content = `
-${importReactContent}
+    this.#content = `${importReactContent}
 ${propsObjectContent}
 function ${this.componentName}(${propsParamContent}) {
     return (
