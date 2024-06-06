@@ -16,7 +16,7 @@ program
   )
   .arguments("[componentName]", "Name of the component to create")
   .option("--withStyles", "Create a CSS file for the component")
-  .option("--lang <lang>", "Choose the file style (js or ts)", "js")
+  .option("-l, --lang <lang>", "Choose the file style (js or ts)", "js")
   .option("--withProps", "Create a component with props")
   .option(
     "--withImportReact",
