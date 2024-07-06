@@ -37,7 +37,7 @@ function createComponent(componentName, options) {
     componentDir,
     `${componentName}.${options.lang}x`
   );
-  const stylesFilePath = path.join(componentDir, `${componentName}.${options.withStyles}`);
+  const stylesFilePath = path.join(componentDir, `${componentName}.module.${options.withStyles}`);
 
   const indexFileContent = `export { default } from './${componentName}';`;
 
