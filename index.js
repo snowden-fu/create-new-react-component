@@ -15,7 +15,7 @@ program
       "The component will be created in a new directory with the same name as the component."
   )
   .arguments("[componentName]", "Name of the component to create")
-  .option("--withStyles", "Create a CSS file for the component")
+  .option("--withStyles <suffix>", "Create a CSS file with the given suffix, default .css", ".css")
   .option("-l, --lang <lang>", "Choose the file style (js or ts)", "js")
   .option("--withProps", "Create a component with props")
   .option(
@@ -37,7 +37,7 @@ function createComponent(componentName, options) {
     componentDir,
     `${componentName}.${options.lang}x`
   );
-  const stylesFilePath = path.join(componentDir, `${componentName}.css`);
+  const stylesFilePath = path.join(componentDir, `${componentName}.${options.withStyles}`);
 
   const indexFileContent = `export { default } from './${componentName}';`;
 
