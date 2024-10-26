@@ -15,8 +15,8 @@ program
       "The component will be created in a new directory with the same name as the component."
   )
   .arguments("[componentName]", "Name of the component to create")
-  .option("--withStyles <suffix>", "Create a CSS file with the given suffix, default .css", ".css")
-  .option("-l, --lang <lang>", "Choose the file style (js or ts)", "js")
+  .option("--style <suffix>", "Create a CSS file with the given suffix, if not given, set as 'css'", ".css")
+  .option("-l, --lang <lang>", "Choose the file style (js or ts), if not given, set as 'js'", "js")
   .option("--withProps", "Create a component with props")
   .option(
     "--withImportReact",
@@ -37,14 +37,14 @@ function createComponent(componentName, options) {
     componentDir,
     `${componentName}.${options.lang}x`
   );
-  const stylesFilePath = path.join(componentDir, `${componentName}.module.${options.withStyles}`);
+  const stylesFilePath = path.join(componentDir, `${componentName}.module.${options.style}`);
 
   const indexFileContent = `export { default } from './${componentName}';`;
 
   const ComponentFileContent = require("./ComponentFileContent");
   const componentFileContent = new ComponentFileContent(
     componentName,
-    options.withStyles,
+    options.style,
     options.lang,
     options.withProps,
     options.withImportReact
@@ -66,12 +66,12 @@ function createComponent(componentName, options) {
     fs.mkdirSync(componentDir);
     fs.writeFileSync(indexFilePath, indexFileContent);
     fs.writeFileSync(componentFilePath, componentFileContentContent);
-    if (options.withStyles) {
+    if (options.style) {
       fs.writeFileSync(stylesFilePath, stylesFileContent);
     }
     console.log(
       `Component ${componentName} created successfully${
-        options.withStyles ? " with language" : ""
+        options.style ? " with language" : ""
       } (${options.lang})`
     );
   } catch (err) {

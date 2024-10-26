@@ -15,22 +15,22 @@ create-new-react-component <componentName> [options]
 
 ## Options
 
-- --withStyles: Create a CSS file for the component
-- --lang <style>: Choose the file style (js or ts), default is js
+- --style <suffix>: Create a style sheet file for the component, if no suffix is provided, the default is css
+- --lang <language>: Choose the file style (js or ts), if no language is provided, the default is js
 
 ## Examples
 ```bash
-# Create a JavaScript component without styles
+# Create a JavaScript component with default options
 create-new-react-component MyComponent
 
-# Create a JavaScript component with styles
-create-new-react-component MyComponent --withStyles
+# Create a JavaScript component with scss styles
+create-new-react-component MyComponent --style scss
 
-# Create a TypeScript component without styles
+# Create a TypeScript component with other default options
 create-new-react-component MyComponent --lang ts
 
-# Create a TypeScript component with styles
-create-new-react-component MyComponent --withStyles --lang ts
+# Create a TypeScript component with scss styles
+create-new-react-component MyComponent --style scss --lang ts
 ```
 
 
