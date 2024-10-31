@@ -61,7 +61,7 @@ class ComponentFileContent {
     const propsObjectContent = this.#generateProps();
     let propsParamContent = "";
     if (this.#hasProps) {
-      propsParamContent = this.style === "ts" ? "{}:Props" : "props";
+      propsParamContent = this.style === "ts" ? "props: Props" : "props";
     }
     this.#content = `${importReactContent}
 ${propsObjectContent}

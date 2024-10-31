@@ -35,7 +35,7 @@ function createComponent(componentName, options) {
   const indexFilePath = path.join(componentDir, `index.${options.lang}`);
   const componentFilePath = path.join(
     componentDir,
-    `${componentName}.${options.lang}x`
+    `${componentName}.${options.lang === 'ts' ? 'tsx' : 'jsx'}`
   );
   const stylesFilePath = path.join(componentDir, `${componentName}.module.${options.style}`);
 
