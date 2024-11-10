@@ -18,6 +18,17 @@ create-new-react-component <componentName> [options]
 - --style <suffix>: Create a style sheet file for the component, if no suffix is provided, the default is css
 - --lang <language>: Choose the file style (js or ts), if no language is provided, the default is js
 
+## Help Command
+For more information, run the following command:
+```bash
+create-new-react-component --help
+```
+or
+```bash
+create-new-react-component -h
+```
+to see the help message.
+
 ## Examples
 ```bash
 # Create a JavaScript component with default options
