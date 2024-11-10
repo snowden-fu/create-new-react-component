@@ -6,14 +6,15 @@ class ComponentFileContent {
   // private properties
   #content = "";
   #hasStyles = false;
-  #style = "js";
+  #fileExtension = "js";
   #hasProps = false;
   #hasImportReact = false;
   #componentName = "";
+  
   constructor(
     componentName,
     hasStyles = this.#hasStyles,
-    style = this.#style,
+    fileExtension = this.#fileExtension,
     hasProps = this.#hasProps,
     hasImportReact = this.#hasImportReact
   ) {
@@ -21,19 +22,20 @@ class ComponentFileContent {
       throw new Error("Component name is required");
     }
     this.#hasStyles = hasStyles;
-    this.#style = style;
+    this.#fileExtension = fileExtension;
     this.#hasProps = hasProps;
     this.#hasImportReact = hasImportReact;
     this.#componentName = componentName;
   }
+  
   get componentName() {
     return this.#componentName;
   }
   get hasStyles() {
     return this.#hasStyles;
   }
-  get style() {
-    return this.#style;
+  get fileExtension() {
+    return this.#fileExtension;
   }
   get hasProps() {
     return this.#hasProps;
@@ -50,7 +52,7 @@ class ComponentFileContent {
   }
   // generate the part of props, considering if it is a ts file and if it is with props
   #generateProps() {
-    if (this.style === "ts" && this.#hasProps) {
+    if (this.fileExtension === "ts" && this.#hasProps) {
       return `interface Props {}\n`;
     }
     return "";
@@ -61,7 +63,7 @@ class ComponentFileContent {
     const propsObjectContent = this.#generateProps();
     let propsParamContent = "";
     if (this.#hasProps) {
-      propsParamContent = this.style === "ts" ? "props: Props" : "props";
+      propsParamContent = this.fileExtension === "ts" ? "props: Props" : "props";
     }
     this.#content = `${importReactContent}
 ${propsObjectContent}
