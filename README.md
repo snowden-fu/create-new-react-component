@@ -68,4 +68,4 @@ Here are the planned features and improvements:
 - [x] Basic Component Generation
 - [x] CSS Module Support
 
-For detailed development plans, please check our [GitHub Projects](link-to-your-project) page.
+For detailed development plans, please check our [GitHub Projects](https://github.com/users/snowden-fu/projects/10) page.
