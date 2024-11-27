@@ -49,3 +49,23 @@ create-new-react-component MyComponent --style scss --lang ts
 
 - [A simple, customizable utility for adding new React components to your project.](https://www.npmjs.com/package/new-component)
 - [Delightful React File/Directory Structure](https://www.joshwcomeau.com/react/file-structure/#introduction)
+
+## 🗺️ Roadmap
+
+Here are the planned features and improvements:
+
+### Coming Soon 🚀
+- [ ] TypeScript Support
+- [ ] Extended Component Template Options
+- [ ] Enhanced Styling Support
+
+### Under Consideration 🤔
+- [ ] Storybook Integration
+- [ ] Automated Test File Generation
+- [ ] CLI Interaction Improvements
+
+### Completed ✅
+- [x] Basic Component Generation
+- [x] CSS Module Support
+
+For detailed development plans, please check our [GitHub Projects](link-to-your-project) page.
