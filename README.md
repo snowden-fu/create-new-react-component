@@ -10,13 +10,16 @@ npm install create-new-react-component --save-dev
 
 ## Usage
 ```bash 
-create-new-react-component <componentName> [options]
+create-new-react-component
 ```
 
-## Options
+The tool will guide you through an interactive process to create your component with the following options:
 
-- --style <suffix>: Create a style sheet file for the component, if no suffix is provided, the default is css
-- --lang <language>: Choose the file style (js or ts), if no language is provided, the default is js
+1. Component Name (must be in PascalCase)
+2. Language (JavaScript or TypeScript)
+3. Styling Solution (CSS, SCSS, or None)
+4. Props Support (Yes/No)
+5. React Import Statement (Yes/No)
 
 ## Help Command
 For more information, run the following command:
@@ -31,19 +34,9 @@ to see the help message.
 
 ## Examples
 ```bash
-# Create a JavaScript component with default options
-create-new-react-component MyComponent
-
-# Create a JavaScript component with scss styles
-create-new-react-component MyComponent --style scss
-
-# Create a TypeScript component with other default options
-create-new-react-component MyComponent --lang ts
-
-# Create a TypeScript component with scss styles
-create-new-react-component MyComponent --style scss --lang ts
+# Start the interactive component creation process
+create-new-react-component
 ```
-
 
 ## References
 
@@ -62,7 +55,7 @@ Here are the planned features and improvements:
 ### Under Consideration 🤔
 - [ ] Storybook Integration
 - [ ] Automated Test File Generation
-- [ ] CLI Interaction Improvements
+- [x] CLI Interaction Improvements
 
 ### Completed ✅
 - [x] Basic Component Generation

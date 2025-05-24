@@ -11,7 +11,8 @@
     "create-new-react-component": "index.js"
   },
   "dependencies": {
-    "commander": "^2.20.3"
+    "commander": "^2.20.3",
+    "inquirer": "^8.2.6"
   },
   "author": {
     "name": "Snowden Fu",

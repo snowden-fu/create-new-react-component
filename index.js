@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const commander = require("commander");
+const inquirer = require("inquirer");
 const fs = require("fs");
 const path = require("path");
 const validateComponentName = require("./ValidateComponentName");
@@ -9,30 +10,69 @@ const program = new commander.Command();
 
 program
   .name("create-new-react-component")
-  .usage("<componentName> [options]")
-  .version("1.1.0")
+  .usage("[options]")
+  .version("1.2.1")
   .description(
     "Create a new React component with an optional CSS file. " +
-      "The component will be created in a new directory with the same name as the component."
+    "The component will be created in a new directory with the same name as the component."
   )
-  .arguments("[componentName]", "Name of the component to create")
-  .option(
-    "--style <suffix>",
-    "Create a CSS file with the given suffix, if not given, set as 'css'",
-    ".css"
-  )
-  .option(
-    "-l, --lang <lang>",
-    "Choose the file style (js or ts), if not given, set as 'js'",
-    "js"
-  )
-  .option("--withProps", "Create a component with props")
-  .option(
-    "--withImportReact",
-    "Create a component with `import React from react`"
-  )
-  .action((componentName, options) => {
-    createComponent(componentName, options);
+  .action(async () => {
+    try {
+      const answers = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'componentName',
+          message: 'What is the name of your component?',
+          validate: (input) => {
+            if (!input) return 'Component name is required';
+            if (!validateComponentName(input)) {
+              return 'Component name must be in PascalCase (e.g., MyComponent)';
+            }
+            return true;
+          }
+        },
+        {
+          type: 'list',
+          name: 'lang',
+          message: 'What language would you like to use?',
+          choices: ['js', 'ts'],
+          default: 'js'
+        },
+        {
+          type: 'list',
+          name: 'style',
+          message: 'What styling solution would you like to use?',
+          choices: [
+            { name: 'CSS', value: 'css' },
+            { name: 'SCSS', value: 'scss' },
+            { name: 'None', value: null }
+          ],
+          default: 'css'
+        },
+        {
+          type: 'confirm',
+          name: 'withProps',
+          message: 'Would you like to include props in your component?',
+          default: false
+        },
+        {
+          type: 'confirm',
+          name: 'withImportReact',
+          message: 'Would you like to include React import statement?',
+          default: false
+        }
+      ]);
+
+      createComponent(answers.componentName, {
+        lang: answers.lang,
+        style: answers.style ? `.${answers.style}` : null,
+        withProps: answers.withProps,
+        withImportReact: answers.withImportReact
+      });
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
   });
 
 function createComponent(componentName, options) {
