@@ -11,7 +11,7 @@ const program = new commander.Command();
 program
   .name("create-new-react-component")
   .usage("[options]")
-  .version("1.2.1")
+  .version("1.3.0")
   .description(
     "Create a new React component with an optional CSS file. " +
     "The component will be created in a new directory with the same name as the component."
