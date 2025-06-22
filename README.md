@@ -16,10 +16,81 @@ create-new-react-component
 The tool will guide you through an interactive process to create your component with the following options:
 
 1. Component Name (must be in PascalCase)
-2. Language (JavaScript or TypeScript)
-3. Styling Solution (CSS, SCSS, or None)
-4. Props Support (Yes/No)
-5. React Import Statement (Yes/No)
+2. Component Type (Functional, Arrow Function, Class, Memoized, or ForwardRef)
+3. Language (JavaScript or TypeScript)
+4. Styling Solution (CSS, SCSS, or None)
+5. Props Support (Yes/No)
+6. React Import Statement (Yes/No)
+
+## Component Type Templates
+
+The tool now supports multiple component type templates:
+
+### Functional Component
+```jsx
+function MyComponent(props) {
+    return (
+        <>
+            {/* Add your component content here */}
+        </>
+    );
+}
+```
+
+### Arrow Function Component
+```jsx
+const MyComponent = (props) => {
+    return (
+        <>
+            {/* Add your component content here */}
+        </>
+    );
+}
+```
+
+### Class Component
+```jsx
+class MyComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    render() {
+        return (
+            <>
+                {/* Add your component content here */}
+            </>
+        );
+    }
+}
+```
+
+### Memoized Component (React.memo)
+```jsx
+import { memo } from 'react';
+
+const MyComponent = memo((props) => {
+    return (
+        <>
+            {/* Add your component content here */}
+        </>
+    );
+});
+```
+
+### ForwardRef Component (React.forwardRef)
+```jsx
+import { forwardRef } from 'react';
+
+const MyComponent = forwardRef((props, ref) => {
+    return (
+        <div ref={ref}>
+            {/* Add your component content here */}
+        </div>
+    );
+});
+```
 
 ## Help Command
 For more information, run the following command:
@@ -48,7 +119,6 @@ create-new-react-component
 Here are the planned features and improvements:
 
 ### Coming Soon 🚀
-- [ ] TypeScript Support
 - [ ] Extended Component Template Options
 - [ ] Enhanced Styling Support
 
@@ -60,5 +130,6 @@ Here are the planned features and improvements:
 ### Completed ✅
 - [x] Basic Component Generation
 - [x] CSS Module Support
+- [x] Component Type Templates (Functional, Arrow, Class, Memoized, ForwardRef)
 
 For detailed development plans, please check our [GitHub Projects](https://github.com/users/snowden-fu/projects/10) page.

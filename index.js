@@ -11,7 +11,7 @@ const program = new commander.Command();
 program
   .name("create-new-react-component")
   .usage("[options]")
-  .version("1.3.0")
+  .version("1.4.0")
   .description(
     "Create a new React component with an optional CSS file. " +
     "The component will be created in a new directory with the same name as the component."
@@ -30,6 +30,19 @@ program
             }
             return true;
           }
+        },
+        {
+          type: 'list',
+          name: 'componentType',
+          message: 'What type of component would you like to create?',
+          choices: [
+            { name: 'Functional Component', value: 'functional' },
+            { name: 'Arrow Function Component', value: 'arrow' },
+            { name: 'Class Component', value: 'class' },
+            { name: 'Memoized Component (React.memo)', value: 'memoized' },
+            { name: 'ForwardRef Component (React.forwardRef)', value: 'forwardRef' }
+          ],
+          default: 'functional'
         },
         {
           type: 'list',
@@ -64,8 +77,9 @@ program
       ]);
 
       createComponent(answers.componentName, {
+        componentType: answers.componentType,
         lang: answers.lang,
-        style: answers.style ? `.${answers.style}` : null,
+        style: answers.style,
         withProps: answers.withProps,
         withImportReact: answers.withImportReact
       });
@@ -94,7 +108,7 @@ function createComponent(componentName, options) {
   );
   const stylesFilePath = path.join(
     componentDir,
-    `${componentName}.module.${options.style}`
+    `${componentName}.module${options.style ? `.${options.style}` : ''}`
   );
 
   const indexFileContent = `export { default } from './${componentName}';`;
@@ -103,10 +117,11 @@ function createComponent(componentName, options) {
   
   const componentFileContent = new ComponentFileContent(
     componentName,
-    options.style,
+    options.style ? `.${options.style}` : null,
     options.lang,
     options.withProps,
-    options.withImportReact
+    options.withImportReact,
+    options.componentType
   );
   const componentFileContentContent =
     componentFileContent.generateComponentContent();
@@ -129,8 +144,8 @@ function createComponent(componentName, options) {
       fs.writeFileSync(stylesFilePath, stylesFileContent);
     }
     console.log(
-      `Component ${componentName} created successfully${
-        options.style ? " with language" : ""
+      `Component ${componentName} created successfully as ${options.componentType} component${
+        options.style ? " with styles" : ""
       } (${options.lang})`
     );
   } catch (err) {
