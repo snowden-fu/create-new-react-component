@@ -11,7 +11,7 @@ const program = new commander.Command();
 program
   .name("create-new-react-component")
   .usage("[options]")
-  .version("1.4.0")
+  .version("1.5.0")
   .description(
     "Create a new React component with an optional CSS file. " +
     "The component will be created in a new directory with the same name as the component."
@@ -24,10 +24,17 @@ program
           name: 'componentName',
           message: 'What is the name of your component?',
           validate: (input) => {
-            if (!input) return 'Component name is required';
-            if (!validateComponentName(input)) {
-              return 'Component name must be in PascalCase (e.g., MyComponent)';
+            const validation = validateComponentName(input);
+            if (!validation.isValid) {
+              return validation.error;
             }
+            
+            // Check if component directory already exists
+            const componentDir = path.join(process.cwd(), input.trim());
+            if (fs.existsSync(componentDir)) {
+              return `Component directory "${input.trim()}" already exists in the current directory`;
+            }
+            
             return true;
           }
         },
@@ -94,10 +101,9 @@ function createComponent(componentName, options) {
     console.error("Error: <componentName> is required.");
     process.exit(1); // Exit the process with an error code
   }
-  if (!validateComponentName(componentName)) {
-    console.error(
-      "Error: Component name must be in PascalCase (e.g., MyComponent)"
-    );
+  const validation = validateComponentName(componentName);
+  if (!validation.isValid) {
+    console.error(`Error: ${validation.error}`);
     process.exit(1);
   }
   const componentDir = path.join(process.cwd(), componentName);
