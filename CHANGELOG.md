@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-07-22
+
+### Added
+- **Comprehensive input validation system** - Enhanced component name validation beyond basic PascalCase
+  - JavaScript reserved keywords blocking (43 keywords: class, function, import, etc.)
+  - React reserved names blocking (21 names: React, Component, Fragment, etc.)
+  - Common problematic names blocking (17 names: Index, Main, App, etc.)
+  - File system compatibility checks (forbidden characters, Windows reserved names)
+  - Real-time directory existence checking during input
+  - Specific, actionable error messages for each validation failure
+  - Cross-platform compatible validation (Windows, macOS, Linux)
+- **Enhanced test coverage** - 37 comprehensive test cases covering all validation scenarios
+- **CLAUDE.md documentation** - Guidance for Claude Code instances working with this repository
+
+### Changed
+- **Backward compatibility maintained** - Legacy boolean validation function still supported
+- **Improved user experience** - More informative error messages with specific guidance
+- **Enhanced CLI interaction** - Better validation feedback during component creation
+
+### Fixed
+- **Input validation robustness** - Prevents creation of components with problematic names
+- **Cross-platform compatibility** - Consistent behavior across different operating systems
+
 ## [1.4.0] - 2024-12-19
 
 ### Added
