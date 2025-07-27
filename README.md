@@ -4,6 +4,12 @@ A command-line interface (CLI) tool to quickly generate React components with op
 
 ## Installation
 
+Install globally:
+```bash
+npm install -g create-new-react-component
+```
+
+Or install as dev dependency:
 ```bash
 npm install create-new-react-component --save-dev
 ```
@@ -131,5 +137,6 @@ Here are the planned features and improvements:
 - [x] Basic Component Generation
 - [x] CSS Module Support
 - [x] Component Type Templates (Functional, Arrow, Class, Memoized, ForwardRef)
+- [x] Automated NPM Publishing via GitHub Actions
 
 For detailed development plans, please check our [GitHub Projects](https://github.com/users/snowden-fu/projects/10) page.
