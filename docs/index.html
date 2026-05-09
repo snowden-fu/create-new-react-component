@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Create React components from your terminal with JavaScript, TypeScript, CSS modules, SCSS modules, and custom templates."
+    >
+    <title>create-new-react-component</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="site-header" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="create-new-react-component home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>create-new-react-component</span>
+      </a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="#install">Install</a>
+        <a href="#templates">Templates</a>
+        <a href="#workflow">Workflow</a>
+        <a href="https://github.com/snowden-fu/create-new-react-component">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">React component generator</p>
+          <h1>Create React components from one command.</h1>
+          <p class="hero-text">
+            Generate JavaScript or TypeScript React components with matching index files,
+            optional CSS or SCSS modules, built-in component templates, and custom template support.
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href="#install">Install</a>
+            <a class="button secondary" href="https://www.npmjs.com/package/create-new-react-component">View on npm</a>
+          </div>
+        </div>
+
+        <figure class="terminal-card" aria-label="CLI preview">
+          <div class="terminal-chrome" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <pre><code>$ create-new-react-component
+? What is the name of your component? ProductCard
+? What type of component would you like to create?
+Arrow Function
+? What language would you like to use? ts
+? What styling solution would you like to use? scss
+
+ProductCard/
+  index.ts
+  ProductCard.tsx
+  ProductCard.module.scss</code></pre>
+        </figure>
+      </section>
+
+      <section class="section stats" aria-label="Project highlights">
+        <div>
+          <strong>5</strong>
+          <span>component templates</span>
+        </div>
+        <div>
+          <strong>2</strong>
+          <span>language targets</span>
+        </div>
+        <div>
+          <strong>CSS</strong>
+          <span>and SCSS modules</span>
+        </div>
+      </section>
+
+      <section id="install" class="section split">
+        <div>
+          <p class="eyebrow">Install</p>
+          <h2>Use it globally or add it to a project.</h2>
+          <p>
+            The CLI starts with an interactive prompt, validates component names, and writes a
+            component directory in your current working folder.
+          </p>
+        </div>
+        <div class="code-panel">
+          <pre><code>npm install -g create-new-react-component
+
+create-new-react-component</code></pre>
+        </div>
+      </section>
+
+      <section id="templates" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Templates</p>
+          <h2>Choose the component shape you need.</h2>
+        </div>
+        <div class="template-grid">
+          <article>
+            <h3>Functional</h3>
+            <p>Classic named function component with optional props.</p>
+          </article>
+          <article>
+            <h3>Arrow</h3>
+            <p>Concise `const Component = () =&gt; {}` output.</p>
+          </article>
+          <article>
+            <h3>Class</h3>
+            <p>React class component scaffold for legacy projects.</p>
+          </article>
+          <article>
+            <h3>Memoized</h3>
+            <p>Wrap components with `React.memo` for stable render paths.</p>
+          </article>
+          <article>
+            <h3>ForwardRef</h3>
+            <p>Create a component ready to pass refs through to a DOM node.</p>
+          </article>
+          <article>
+            <h3>Custom</h3>
+            <p>Load your own reusable template file or template directory.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="workflow" class="section split reverse">
+        <div class="file-tree" aria-label="Generated file tree">
+          <pre><code>ComponentName/
+├── index.js | index.ts
+├── ComponentName.jsx | ComponentName.tsx
+└── ComponentName.module.css | .scss</code></pre>
+        </div>
+        <div>
+          <p class="eyebrow">Workflow</p>
+          <h2>Predictable files, ready to edit.</h2>
+          <p>
+            Generated components follow a small folder convention that keeps imports tidy,
+            keeps styles near the component, and works across JavaScript and TypeScript projects.
+          </p>
+          <a class="inline-link" href="https://github.com/snowden-fu/create-new-react-component#readme">
+            Read the full documentation
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>MIT Licensed</span>
+      <a href="https://github.com/snowden-fu/create-new-react-component">snowden-fu/create-new-react-component</a>
+    </footer>
+  </body>
+</html>
