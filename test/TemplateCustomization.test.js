@@ -2,12 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const { 
-  getAvailableCustomTemplates, 
-  loadCustomTemplate, 
-  extractTemplateVariables, 
+const {
+  getAvailableCustomTemplates,
+  loadCustomTemplate,
+  extractTemplateVariables,
   replaceTemplateVariables,
-  validateTemplate 
+  validateTemplate,
+  buildComponentOptions
 } = require('../index');
 
 describe('Template Customization', () => {
@@ -34,9 +35,9 @@ const {{ComponentName}} = () => {
 };
 
 export default {{ComponentName}};`;
-      
+
       fs.writeFileSync(tempFile, templateContent);
-      
+
       const templates = getAvailableCustomTemplates(tempDir);
       expect(templates).toHaveLength(1);
       expect(templates[0].name).toBe('custom-component');
@@ -46,9 +47,9 @@ export default {{ComponentName}};`;
     it('should find specific template file', () => {
       const templateContent = `const {{ComponentName}} = () => <div />;
 export default {{ComponentName}};`;
-      
+
       fs.writeFileSync(tempFile, templateContent);
-      
+
       const templates = getAvailableCustomTemplates(null, tempFile);
       expect(templates).toHaveLength(1);
       expect(templates[0].name).toBe('custom-component');
@@ -67,7 +68,7 @@ export default {{ComponentName}};`;
           return <div className="{{component_name}}">{{componentName}}</div>;
         };
       `;
-      
+
       const variables = extractTemplateVariables(content);
       expect(variables).toContain('ComponentName');
       expect(variables).toContain('component_name');
@@ -88,7 +89,7 @@ export default {{ComponentName}};`;
         ComponentName: 'TestComponent',
         componentName: 'testComponent'
       };
-      
+
       const result = replaceTemplateVariables(content, variables);
       expect(result).toBe('const TestComponent = () => <div>testComponent</div>;');
     });
@@ -96,7 +97,7 @@ export default {{ComponentName}};`;
     it('should handle multiple occurrences of the same variable', () => {
       const content = `{{ComponentName}} {{ComponentName}}`;
       const variables = { ComponentName: 'Test' };
-      
+
       const result = replaceTemplateVariables(content, variables);
       expect(result).toBe('Test Test');
     });
@@ -107,19 +108,19 @@ export default {{ComponentName}};`;
       const content = `import React from 'react';
 const {{ComponentName}} = () => <div />;
 export default {{ComponentName}};`;
-      
+
       expect(() => validateTemplate(content, 'test.jsx')).not.toThrow();
     });
 
     it('should warn about missing export', () => {
       const content = `const {{ComponentName}} = () => <div />;`;
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-      
+
       validateTemplate(content, 'test.jsx');
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('may not have a proper export statement')
       );
-      
+
       consoleSpy.mockRestore();
     });
 
@@ -127,12 +128,12 @@ export default {{ComponentName}};`;
       const content = `const MyComponent = () => <div />;
 export default MyComponent;`;
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-      
+
       validateTemplate(content, 'test.jsx');
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('does not use {{componentName}} or {{ComponentName}} variables')
       );
-      
+
       consoleSpy.mockRestore();
     });
 
@@ -143,7 +144,7 @@ const {{ComponentName}} = () => {
   return <div />;
 };
 export default {{ComponentName}};`;
-      
+
       expect(() => validateTemplate(dangerousContent, 'test.jsx')).toThrow(
         'Template contains potentially dangerous code'
       );
@@ -154,7 +155,7 @@ export default {{ComponentName}};`;
 const cp = require('child_process');
 const {{ComponentName}} = () => <div />;
 export default {{ComponentName}};`;
-      
+
       expect(() => validateTemplate(dangerousContent, 'test.jsx')).toThrow(
         'Template contains potentially dangerous code'
       );
@@ -166,9 +167,9 @@ export default {{ComponentName}};`;
       const content = `import React from 'react';
 const {{ComponentName}} = () => <div>{{componentName}}</div>;
 export default {{ComponentName}};`;
-      
+
       fs.writeFileSync(tempFile, content);
-      
+
       const template = loadCustomTemplate(tempFile);
       expect(template.content).toBe(content);
       expect(template.variables).toContain('ComponentName');
@@ -187,12 +188,47 @@ const {{ComponentName}} = () => {
   process.exit(1);
   return <div />;
 };`;
-      
+
       fs.writeFileSync(tempFile, dangerousContent);
-      
+
       expect(() => loadCustomTemplate(tempFile)).toThrow(
         'Failed to load template'
       );
+    });
+  });
+
+  describe('buildComponentOptions', () => {
+    it('should build defaults for non-interactive generation', () => {
+      expect(buildComponentOptions({})).toEqual({
+        componentType: 'functional',
+        lang: 'js',
+        style: 'css',
+        withProps: false,
+        withImportReact: false,
+        customTemplate: null
+      });
+    });
+
+    it('should normalize none styles and force React import for class components', () => {
+      expect(buildComponentOptions({
+        type: 'class',
+        lang: 'ts',
+        style: 'none',
+        withProps: true
+      })).toEqual({
+        componentType: 'class',
+        lang: 'ts',
+        style: null,
+        withProps: true,
+        withImportReact: true,
+        customTemplate: null
+      });
+    });
+
+    it('should reject unsupported CLI option values', () => {
+      expect(() => buildComponentOptions({ type: 'server' })).toThrow('type must be one of');
+      expect(() => buildComponentOptions({ lang: 'tsx' })).toThrow('lang must be one of');
+      expect(() => buildComponentOptions({ style: 'less' })).toThrow('style must be one of');
     });
   });
 });

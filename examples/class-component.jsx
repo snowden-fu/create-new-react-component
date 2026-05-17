@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './TestComponent.module.css';
 
 class TestComponent extends React.Component {
     constructor(props) {
@@ -8,11 +9,11 @@ class TestComponent extends React.Component {
 
     render() {
         return (
-            <>
+            <div className={styles.root}>
                 {/* Add your component content here */}
-            </>
+            </div>
         );
     }
 }
 
-export default TestComponent; 
+export default TestComponent;

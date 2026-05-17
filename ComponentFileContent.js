@@ -52,21 +52,35 @@ class ComponentFileContent {
   get content() {
     return this.#content;
   }
-  // generate the part of "import React from 'react'";
-  #generateImportReact() {
-    return this.#hasImportReact ? `import React from 'react';\n` : "";
+  #needsDefaultReactImport() {
+    return this.#hasImportReact || this.#componentType === "class";
   }
-  // generate additional React imports based on component type
-  #generateAdditionalImports() {
-    let imports = "";
-    
+  // generate React imports required by the selected template
+  #generateReactImports() {
+    const namedImports = [];
+
     if (this.#componentType === "memoized") {
-      imports += `import { memo } from 'react';\n`;
+      namedImports.push("memo");
     } else if (this.#componentType === "forwardRef") {
-      imports += `import { forwardRef } from 'react';\n`;
+      namedImports.push("forwardRef");
     }
-    
-    return imports;
+
+    if (this.#needsDefaultReactImport() && namedImports.length > 0) {
+      return `import React, { ${namedImports.join(", ")} } from 'react';\n`;
+    }
+
+    if (this.#needsDefaultReactImport()) {
+      return `import React from 'react';\n`;
+    }
+
+    if (namedImports.length > 0) {
+      return `import { ${namedImports.join(", ")} } from 'react';\n`;
+    }
+
+    return "";
+  }
+  #generateStyleImport() {
+    return this.#hasStyles ? `import styles from './${this.componentName}.module${this.#hasStyles}';\n` : "";
   }
   // generate the part of props, considering if it is a ts file and if it is with props
   #generateProps() {
@@ -74,6 +88,12 @@ class ComponentFileContent {
       return `interface Props {}\n`;
     }
     return "";
+  }
+  #generateWrapperStart(indent = "") {
+    return this.#hasStyles ? `${indent}<div className={styles.root}>` : `${indent}<>`;
+  }
+  #generateWrapperEnd(indent = "") {
+    return this.#hasStyles ? `${indent}</div>` : `${indent}</>`;
   }
   // generate functional component
   #generateFunctionalComponent() {
@@ -84,9 +104,9 @@ class ComponentFileContent {
     
     return `function ${this.componentName}(${propsParamContent}) {
     return (
-      <>
+${this.#generateWrapperStart("      ")}
         {/* Add your component content here */}
-      </>
+${this.#generateWrapperEnd("      ")}
     );
 }`;
   }
@@ -99,30 +119,29 @@ class ComponentFileContent {
     
     return `const ${this.componentName} = (${propsParamContent}) => {
     return (
-      <>
+${this.#generateWrapperStart("      ")}
         {/* Add your component content here */}
-      </>
+${this.#generateWrapperEnd("      ")}
     );
 }`;
   }
   // generate class component
   #generateClassComponent() {
-    let propsParamContent = "";
-    if (this.#hasProps) {
-      propsParamContent = this.fileExtension === "ts" ? "Props" : "";
-    }
-    
-    return `class ${this.componentName} extends React.Component${propsParamContent ? `<${propsParamContent}>` : ''} {
-    constructor(props) {
+    const propsGeneric = this.#hasProps && this.fileExtension === "ts" ? "<Props>" : "";
+    const constructorProps = this.fileExtension === "ts" && this.#hasProps ? "props: Props" : "props";
+    const constructorBlock = this.#hasProps ? `    constructor(${constructorProps}) {
         super(props);
         this.state = {};
     }
 
-    render() {
+` : "";
+
+    return `class ${this.componentName} extends React.Component${propsGeneric} {
+${constructorBlock}    render() {
         return (
-            <>
+${this.#generateWrapperStart("            ")}
                 {/* Add your component content here */}
-            </>
+${this.#generateWrapperEnd("            ")}
         );
     }
 }`;
@@ -136,22 +155,25 @@ class ComponentFileContent {
     
     return `const ${this.componentName} = memo((${propsParamContent}) => {
     return (
-        <>
+${this.#generateWrapperStart("        ")}
             {/* Add your component content here */}
-        </>
+${this.#generateWrapperEnd("        ")}
     );
 });`;
   }
   // generate forwardRef component
   #generateForwardRefComponent() {
-    let propsParamContent = "";
-    if (this.#hasProps) {
-      propsParamContent = this.fileExtension === "ts" ? "props: Props" : "props";
-    }
+    const typeParameters = this.fileExtension === "ts"
+      ? `<HTMLDivElement${this.#hasProps ? ", Props" : ""}>`
+      : "";
+    const propsParamContent = this.fileExtension === "ts"
+      ? (this.#hasProps ? "props: Props" : "_props")
+      : "props";
+    const classNameContent = this.#hasStyles ? " className={styles.root}" : "";
     
-    return `const ${this.componentName} = forwardRef<HTMLDivElement, ${this.fileExtension === "ts" ? "Props" : "any"}>((${propsParamContent}, ref) => {
+    return `const ${this.componentName} = forwardRef${typeParameters}((${propsParamContent}, ref) => {
     return (
-        <div ref={ref}>
+        <div ref={ref}${classNameContent}>
             {/* Add your component content here */}
         </div>
     );
@@ -159,8 +181,8 @@ class ComponentFileContent {
   }
   // generate the component content based on type
   generateComponentContent() {
-    const importReactContent = this.#generateImportReact();
-    const additionalImports = this.#generateAdditionalImports();
+    const importReactContent = this.#generateReactImports();
+    const styleImportContent = this.#generateStyleImport();
     const propsObjectContent = this.#generateProps();
     
     let componentContent = "";
@@ -185,11 +207,12 @@ class ComponentFileContent {
         componentContent = this.#generateFunctionalComponent();
     }
     
-    this.#content = `${importReactContent}${additionalImports}
-${propsObjectContent}
-${componentContent}
-
-export default ${this.componentName};`;
+    this.#content = [
+      `${importReactContent}${styleImportContent}`.trimEnd(),
+      propsObjectContent.trimEnd(),
+      componentContent,
+      `export default ${this.componentName};`
+    ].filter(Boolean).join("\n\n");
     
     return this.#content;
   }

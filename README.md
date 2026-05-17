@@ -28,34 +28,55 @@ The tool will guide you through an interactive process to create your component 
 5. Props Support (Yes/No)
 6. React Import Statement (Yes/No)
 
+You can also generate a component non-interactively:
+
+```bash
+create-new-react-component Button --type arrow --lang ts --style scss --with-props
+```
+
+Available flags:
+
+- `--type <type>`: `functional`, `arrow`, `class`, `memoized`, or `forwardRef`
+- `--lang <lang>`: `js` or `ts`
+- `--style <style>`: `css`, `scss`, or `none`
+- `--with-props`: include a props parameter and TypeScript `Props` interface
+- `--with-react-import`: include a React import statement
+
 ## Component Type Templates
 
 The tool now supports multiple component type templates:
 
 ### Functional Component
 ```jsx
+import styles from './MyComponent.module.css';
+
 function MyComponent(props) {
     return (
-        <>
+        <div className={styles.root}>
             {/* Add your component content here */}
-        </>
+        </div>
     );
 }
 ```
 
 ### Arrow Function Component
 ```jsx
+import styles from './MyComponent.module.css';
+
 const MyComponent = (props) => {
     return (
-        <>
+        <div className={styles.root}>
             {/* Add your component content here */}
-        </>
+        </div>
     );
 }
 ```
 
 ### Class Component
 ```jsx
+import React from 'react';
+import styles from './MyComponent.module.css';
+
 class MyComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -64,9 +85,9 @@ class MyComponent extends React.Component {
 
     render() {
         return (
-            <>
+            <div className={styles.root}>
                 {/* Add your component content here */}
-            </>
+            </div>
         );
     }
 }
@@ -75,12 +96,13 @@ class MyComponent extends React.Component {
 ### Memoized Component (React.memo)
 ```jsx
 import { memo } from 'react';
+import styles from './MyComponent.module.css';
 
 const MyComponent = memo((props) => {
     return (
-        <>
+        <div className={styles.root}>
             {/* Add your component content here */}
-        </>
+        </div>
     );
 });
 ```
@@ -88,10 +110,11 @@ const MyComponent = memo((props) => {
 ### ForwardRef Component (React.forwardRef)
 ```jsx
 import { forwardRef } from 'react';
+import styles from './MyComponent.module.css';
 
 const MyComponent = forwardRef((props, ref) => {
     return (
-        <div ref={ref}>
+        <div ref={ref} className={styles.root}>
             {/* Add your component content here */}
         </div>
     );
@@ -127,6 +150,7 @@ Here are the planned features and improvements:
 ### Coming Soon 🚀
 - [ ] Extended Component Template Options
 - [ ] Enhanced Styling Support
+- [ ] More non-interactive CLI options
 
 ### Under Consideration 🤔
 - [ ] Storybook Integration
@@ -137,6 +161,7 @@ Here are the planned features and improvements:
 - [x] Basic Component Generation
 - [x] CSS Module Support
 - [x] Component Type Templates (Functional, Arrow, Class, Memoized, ForwardRef)
+- [x] Non-interactive CLI generation
 - [x] Automated NPM Publishing via GitHub Actions
 
 For detailed development plans, please check our [GitHub Projects](https://github.com/users/snowden-fu/projects/10) page.

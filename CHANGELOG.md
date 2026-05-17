@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Non-interactive CLI generation with component name, type, language, style, props, and React import flags.
+- Integration coverage for generated component files and CSS/SCSS module output.
+
+### Changed
+- Generated styled components now import CSS modules and use a `styles.root` class.
+- Class components always include the required React import.
+- Package, CLI, and lockfile version metadata are aligned.
+
+### Fixed
+- ForwardRef templates now generate valid JavaScript and TypeScript output with or without props.
+
 ## [1.5.1] - 2025-07-27
 
 ### Added
@@ -85,4 +99,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command-line options for styling and language selection
 
 ### Changed
-- Initial release with basic functionality 
+- Initial release with basic functionality
