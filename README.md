@@ -1,167 +1,305 @@
 # create-new-react-component
 
-A command-line interface (CLI) tool to quickly generate React components with optional TypeScript support and CSS styles.
+Generate React component folders from your terminal in a few seconds.
+
+`create-new-react-component` can run as an interactive prompt or as a scriptable CLI command. It supports JavaScript, TypeScript, CSS Modules, SCSS Modules, props stubs, React imports, and several common component templates.
+
+## Features
+
+- Interactive component creation for quick project work
+- Non-interactive flags for scripts, npm commands, and editor integrations
+- JavaScript and TypeScript output
+- CSS Module and SCSS Module file generation
+- Functional, arrow function, class, memoized, and `forwardRef` templates
+- PascalCase component name validation
+- Optional custom template files
 
 ## Installation
 
 Install globally:
+
 ```bash
 npm install -g create-new-react-component
 ```
 
-Or install as dev dependency:
+Or install in a project:
+
 ```bash
-npm install create-new-react-component --save-dev
+npm install --save-dev create-new-react-component
 ```
 
-## Usage
-```bash 
+You can also run it with `npx`:
+
+```bash
+npx create-new-react-component Button
+```
+
+## Quick Start
+
+Start the interactive prompt:
+
+```bash
 create-new-react-component
 ```
 
-The tool will guide you through an interactive process to create your component with the following options:
-
-1. Component Name (must be in PascalCase)
-2. Component Type (Functional, Arrow Function, Class, Memoized, or ForwardRef)
-3. Language (JavaScript or TypeScript)
-4. Styling Solution (CSS, SCSS, or None)
-5. Props Support (Yes/No)
-6. React Import Statement (Yes/No)
-
-You can also generate a component non-interactively:
+Or generate a component directly:
 
 ```bash
 create-new-react-component Button --type arrow --lang ts --style scss --with-props
 ```
 
-Available flags:
+This creates:
 
-- `--type <type>`: `functional`, `arrow`, `class`, `memoized`, or `forwardRef`
-- `--lang <lang>`: `js` or `ts`
-- `--style <style>`: `css`, `scss`, or `none`
-- `--with-props`: include a props parameter and TypeScript `Props` interface
-- `--with-react-import`: include a React import statement
-
-## Component Type Templates
-
-The tool now supports multiple component type templates:
-
-### Functional Component
-```jsx
-import styles from './MyComponent.module.css';
-
-function MyComponent(props) {
-    return (
-        <div className={styles.root}>
-            {/* Add your component content here */}
-        </div>
-    );
-}
+```text
+Button/
+├── Button.module.scss
+├── Button.tsx
+└── index.ts
 ```
 
-### Arrow Function Component
-```jsx
-import styles from './MyComponent.module.css';
+## Interactive Mode
 
-const MyComponent = (props) => {
-    return (
-        <div className={styles.root}>
-            {/* Add your component content here */}
-        </div>
-    );
-}
-```
+Run the command without a component name:
 
-### Class Component
-```jsx
-import React from 'react';
-import styles from './MyComponent.module.css';
-
-class MyComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
-    render() {
-        return (
-            <div className={styles.root}>
-                {/* Add your component content here */}
-            </div>
-        );
-    }
-}
-```
-
-### Memoized Component (React.memo)
-```jsx
-import { memo } from 'react';
-import styles from './MyComponent.module.css';
-
-const MyComponent = memo((props) => {
-    return (
-        <div className={styles.root}>
-            {/* Add your component content here */}
-        </div>
-    );
-});
-```
-
-### ForwardRef Component (React.forwardRef)
-```jsx
-import { forwardRef } from 'react';
-import styles from './MyComponent.module.css';
-
-const MyComponent = forwardRef((props, ref) => {
-    return (
-        <div ref={ref} className={styles.root}>
-            {/* Add your component content here */}
-        </div>
-    );
-});
-```
-
-## Help Command
-For more information, run the following command:
 ```bash
-create-new-react-component --help
-```
-or
-```bash
-create-new-react-component -h
-```
-to see the help message.
-
-## Examples
-```bash
-# Start the interactive component creation process
 create-new-react-component
 ```
 
-## References
+The prompt asks for:
 
-- [A simple, customizable utility for adding new React components to your project.](https://www.npmjs.com/package/new-component)
-- [Delightful React File/Directory Structure](https://www.joshwcomeau.com/react/file-structure/#introduction)
+1. Component name, such as `Button` or `UserProfile`
+2. Component type
+3. Language
+4. Styling solution
+5. Props support
+6. React import preference
 
-## 🗺️ Roadmap
+Component names must be PascalCase.
 
-Here are the planned features and improvements:
+## Non-Interactive Mode
 
-### Coming Soon 🚀
-- [ ] Extended Component Template Options
-- [ ] Enhanced Styling Support
-- [ ] More non-interactive CLI options
+Pass the component name and options in one command:
 
-### Under Consideration 🤔
-- [ ] Storybook Integration
-- [ ] Automated Test File Generation
-- [x] CLI Interaction Improvements
+```bash
+create-new-react-component UserCard --type functional --lang js --style css
+create-new-react-component Dialog --type forwardRef --lang ts --style scss --with-props
+create-new-react-component Badge --type memoized --style none
+```
 
-### Completed ✅
-- [x] Basic Component Generation
-- [x] CSS Module Support
-- [x] Component Type Templates (Functional, Arrow, Class, Memoized, ForwardRef)
-- [x] Non-interactive CLI generation
-- [x] Automated NPM Publishing via GitHub Actions
+### Options
 
-For detailed development plans, please check our [GitHub Projects](https://github.com/users/snowden-fu/projects/10) page.
+| Option | Values | Description |
+| --- | --- | --- |
+| `-T, --type <type>` | `functional`, `arrow`, `class`, `memoized`, `forwardRef` | Component template to generate |
+| `-l, --lang <lang>` | `js`, `ts` | Output language |
+| `-s, --style <style>` | `css`, `scss`, `none` | Styling file to generate |
+| `--with-props` | | Adds a props parameter and a TypeScript `Props` interface when using `--lang ts` |
+| `--with-react-import` | | Adds `import React from 'react';` where applicable |
+| `-t, --template <path>` | file path | Adds a custom template file to the interactive template picker |
+| `--template-dir <path>` | directory path | Adds all supported custom templates in a directory to the interactive template picker |
+| `-h, --help` | | Shows CLI help |
+| `-V, --version` | | Shows the installed version |
+
+Default values in non-interactive mode:
+
+```text
+--type functional
+--lang js
+--style css
+```
+
+Class components always include the React import because they extend `React.Component`.
+
+## Generated Output
+
+With styles enabled, generated components import the CSS or SCSS Module and apply `styles.root`.
+
+```tsx
+import styles from './Button.module.scss';
+
+interface Props {}
+
+const Button = (props: Props) => {
+    return (
+      <div className={styles.root}>
+        {/* Add your component content here */}
+      </div>
+    );
+}
+
+export default Button;
+```
+
+The style file starts with:
+
+```scss
+/* Add your component styles here */
+.root {
+}
+```
+
+The barrel file exports the component:
+
+```ts
+export { default } from './Button';
+```
+
+## Component Types
+
+### Functional
+
+```jsx
+function Button() {
+    return (
+      <>
+        {/* Add your component content here */}
+      </>
+    );
+}
+
+export default Button;
+```
+
+### Arrow Function
+
+```jsx
+const Button = () => {
+    return (
+      <>
+        {/* Add your component content here */}
+      </>
+    );
+}
+
+export default Button;
+```
+
+### Class
+
+```jsx
+import React from 'react';
+
+class Button extends React.Component {
+    render() {
+        return (
+            <>
+                {/* Add your component content here */}
+            </>
+        );
+    }
+}
+
+export default Button;
+```
+
+### Memoized
+
+```jsx
+import { memo } from 'react';
+
+const Button = memo(() => {
+    return (
+        <>
+            {/* Add your component content here */}
+        </>
+    );
+});
+
+export default Button;
+```
+
+### Forward Ref
+
+```tsx
+import { forwardRef } from 'react';
+
+const Button = forwardRef<HTMLDivElement>((_props, ref) => {
+    return (
+        <div ref={ref}>
+            {/* Add your component content here */}
+        </div>
+    );
+});
+
+export default Button;
+```
+
+## Custom Templates
+
+Use a custom template file:
+
+```bash
+create-new-react-component --template ./templates/card.tsx
+```
+
+Or use a directory of templates:
+
+```bash
+create-new-react-component --template-dir ./templates
+```
+
+Supported template extensions:
+
+```text
+.js
+.jsx
+.ts
+.tsx
+```
+
+Available template variables:
+
+| Variable | Example output for `UserCard` |
+| --- | --- |
+| `{{componentName}}` | `UserCard` |
+| `{{ComponentName}}` | `UserCard` |
+| `{{COMPONENT_NAME}}` | `USERCARD` |
+| `{{component_name}}` | `usercard` |
+
+Example template:
+
+```tsx
+import styles from './{{ComponentName}}.module.css';
+
+interface Props {}
+
+const {{ComponentName}} = (props: Props) => {
+  return <div className={styles.root}>{{componentName}}</div>;
+};
+
+export default {{ComponentName}};
+```
+
+## Validation
+
+Component names must:
+
+- Use PascalCase, such as `Button`, `UserCard`, or `NavigationMenu`
+- Be at least 2 characters long
+- Avoid filesystem-forbidden characters
+- Avoid reserved JavaScript and React names
+- Avoid common ambiguous names such as `App`, `Main`, or `Index`
+
+## Development
+
+Clone the repository and install dependencies:
+
+```bash
+npm install
+```
+
+Run tests:
+
+```bash
+npm test
+```
+
+Run the CLI locally:
+
+```bash
+npm run create-new-react-component
+```
+
+## License
+
+MIT
