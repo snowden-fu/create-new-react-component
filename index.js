@@ -5,6 +5,59 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 const path = require("path");
 const validateComponentName = require("./ValidateComponentName");
+const packageJson = require("./package.json");
+
+const COMPONENT_TYPES = ["functional", "arrow", "class", "memoized", "forwardRef"];
+const LANGUAGES = ["js", "ts"];
+const STYLES = ["css", "scss", "none"];
+
+function validateChoice(name, value, choices) {
+  if (value === undefined || value === null) {
+    return;
+  }
+
+  if (!choices.includes(value)) {
+    throw new Error(`${name} must be one of: ${choices.join(", ")}`);
+  }
+}
+
+function normalizeStyle(style) {
+  if (style === undefined || style === null || style === "none") {
+    return null;
+  }
+
+  return style;
+}
+
+function buildComponentOptions(options = {}) {
+  const componentType = options.type || "functional";
+  const lang = options.lang || "js";
+  const style = normalizeStyle(options.style === undefined ? "css" : options.style);
+
+  validateChoice("type", componentType, COMPONENT_TYPES);
+  validateChoice("lang", lang, LANGUAGES);
+  validateChoice("style", options.style, STYLES);
+
+  return {
+    componentType,
+    lang,
+    style,
+    withProps: Boolean(options.withProps),
+    withImportReact: Boolean(options.withReactImport) || componentType === "class",
+    customTemplate: null
+  };
+}
+
+function shouldCreateFromOptions(componentName, options) {
+  return Boolean(
+    componentName ||
+    options.type ||
+    options.lang ||
+    options.style ||
+    options.withProps ||
+    options.withReactImport
+  );
+}
 
 function getAvailableCustomTemplates(templateDir, templateFile) {
   const templates = [];
@@ -109,15 +162,26 @@ const program = new commander.Command();
 program
   .name("create-new-react-component")
   .usage("[options]")
-  .version("1.5.0")
+  .version(packageJson.version)
   .description(
     "Create a new React component with an optional CSS file. " +
     "The component will be created in a new directory with the same name as the component."
   )
+  .arguments("[componentName]")
+  .option('-T, --type <type>', 'component type: functional, arrow, class, memoized, or forwardRef')
+  .option('-l, --lang <lang>', 'component language: js or ts')
+  .option('-s, --style <style>', 'styling solution: css, scss, or none')
+  .option('--with-props', 'include a props parameter and TypeScript Props interface')
+  .option('--with-react-import', 'include a React import statement')
   .option('-t, --template <path>', 'path to custom template file')
   .option('--template-dir <path>', 'path to custom templates directory')
-  .action(async (options) => {
+  .action(async (componentName, options) => {
     try {
+      if (shouldCreateFromOptions(componentName, options)) {
+        createComponent(componentName, buildComponentOptions(options));
+        return;
+      }
+
       const customTemplates = getAvailableCustomTemplates(options.templateDir, options.template);
       
       const questions = [
@@ -165,11 +229,11 @@ program
           name: 'componentType',
           message: 'What type of component would you like to create?',
           choices: [
-            { name: 'Functional Component', value: 'functional' },
-            { name: 'Arrow Function Component', value: 'arrow' },
-            { name: 'Class Component', value: 'class' },
-            { name: 'Memoized Component (React.memo)', value: 'memoized' },
-            { name: 'ForwardRef Component (React.forwardRef)', value: 'forwardRef' }
+            { name: 'Functional Component', value: COMPONENT_TYPES[0] },
+            { name: 'Arrow Function Component', value: COMPONENT_TYPES[1] },
+            { name: 'Class Component', value: COMPONENT_TYPES[2] },
+            { name: 'Memoized Component (React.memo)', value: COMPONENT_TYPES[3] },
+            { name: 'ForwardRef Component (React.forwardRef)', value: COMPONENT_TYPES[4] }
           ],
           default: 'functional',
           when: (answers) => !answers.customTemplate
@@ -178,7 +242,7 @@ program
           type: 'list',
           name: 'lang',
           message: 'What language would you like to use?',
-          choices: ['js', 'ts'],
+          choices: LANGUAGES,
           default: 'js',
           when: (answers) => !answers.customTemplate
         },
@@ -205,7 +269,7 @@ program
           type: 'confirm',
           name: 'withImportReact',
           message: 'Would you like to include React import statement?',
-          default: false,
+          default: (answers) => answers.componentType === 'class',
           when: (answers) => !answers.customTemplate
         }
       );
@@ -217,7 +281,7 @@ program
         lang: answers.lang,
         style: answers.style,
         withProps: answers.withProps,
-        withImportReact: answers.withImportReact,
+        withImportReact: answers.withImportReact || answers.componentType === 'class',
         customTemplate: answers.customTemplate
       });
     } catch (error) {
@@ -237,10 +301,11 @@ function createComponent(componentName, options) {
     process.exit(1);
   }
   
-  const componentDir = path.join(process.cwd(), componentName);
+  const trimmedComponentName = componentName.trim();
+  const componentDir = path.join(process.cwd(), trimmedComponentName);
   
   if (fs.existsSync(componentDir)) {
-    console.error(`Component ${componentName} already exists`);
+    console.error(`Component ${trimmedComponentName} already exists`);
     return;
   }
 
@@ -248,20 +313,22 @@ function createComponent(componentName, options) {
     fs.mkdirSync(componentDir);
     
     if (options.customTemplate) {
-      createComponentFromCustomTemplate(componentName, componentDir, options);
+      createComponentFromCustomTemplate(trimmedComponentName, componentDir, options);
     } else {
-      createComponentFromBuiltInTemplate(componentName, componentDir, options);
+      createComponentFromBuiltInTemplate(trimmedComponentName, componentDir, options);
     }
     
     console.log(
-      `Component ${componentName} created successfully${
+      `Component ${trimmedComponentName} created successfully${
         options.customTemplate 
           ? ` using custom template "${options.customTemplate.name}"` 
           : ` as ${options.componentType} component${options.style ? " with styles" : ""} (${options.lang})`
       }`
     );
+    return componentDir;
   } catch (err) {
-    console.error(`Error creating component ${componentName}:`, err);
+    console.error(`Error creating component ${trimmedComponentName}:`, err);
+    throw err;
   }
 }
 
@@ -314,7 +381,7 @@ function createComponentFromBuiltInTemplate(componentName, componentDir, options
   const componentFileContentContent = componentFileContent.generateComponentContent();
 
   const stylesFileContent = `/* Add your component styles here */
-.${componentName} {
+.root {
 }
 `;
 
@@ -336,5 +403,7 @@ module.exports = {
   loadCustomTemplate,
   extractTemplateVariables,
   replaceTemplateVariables,
-  validateTemplate
+  validateTemplate,
+  buildComponentOptions,
+  createComponent
 };
