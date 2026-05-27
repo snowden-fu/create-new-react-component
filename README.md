@@ -1,5 +1,7 @@
 # create-new-react-component
 
+[中文文档](./README.zh-CN.md)
+
 Generate React component folders from your terminal in a few seconds.
 
 `create-new-react-component` can run as an interactive prompt or as a scriptable CLI command. It supports JavaScript, TypeScript, CSS Modules, SCSS Modules, props stubs, React imports, and several common component templates.
