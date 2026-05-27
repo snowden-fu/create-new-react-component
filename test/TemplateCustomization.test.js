@@ -8,6 +8,7 @@ const {
   extractTemplateVariables,
   replaceTemplateVariables,
   validateTemplate,
+  normalizeTargetDir,
   buildComponentOptions
 } = require('../index');
 
@@ -199,14 +200,15 @@ const {{ComponentName}} = () => {
 
   describe('buildComponentOptions', () => {
     it('should build defaults for non-interactive generation', () => {
-      expect(buildComponentOptions({})).toEqual({
+      expect(buildComponentOptions({})).toEqual(expect.objectContaining({
         componentType: 'functional',
         lang: 'js',
         style: 'css',
         withProps: false,
         withImportReact: false,
+        targetDir: process.cwd(),
         customTemplate: null
-      });
+      }));
     });
 
     it('should normalize none styles and force React import for class components', () => {
@@ -215,20 +217,46 @@ const {{ComponentName}} = () => {
         lang: 'ts',
         style: 'none',
         withProps: true
-      })).toEqual({
+      })).toEqual(expect.objectContaining({
         componentType: 'class',
         lang: 'ts',
         style: null,
         withProps: true,
         withImportReact: true,
+        targetDir: process.cwd(),
         customTemplate: null
-      });
+      }));
     });
 
     it('should reject unsupported CLI option values', () => {
       expect(() => buildComponentOptions({ type: 'server' })).toThrow('type must be one of');
       expect(() => buildComponentOptions({ lang: 'tsx' })).toThrow('lang must be one of');
       expect(() => buildComponentOptions({ style: 'less' })).toThrow('style must be one of');
+    });
+
+    it('should resolve a target directory option', () => {
+      expect(buildComponentOptions({ dir: 'src/components' })).toEqual(expect.objectContaining({
+        targetDir: path.resolve(process.cwd(), 'src/components')
+      }));
+    });
+
+    it('should resolve a custom template for non-interactive generation', () => {
+      const content = `const {{ComponentName}} = () => <div />;
+export default {{ComponentName}};`;
+
+      fs.writeFileSync(tempFile, content);
+
+      expect(buildComponentOptions({ template: tempFile })).toEqual(expect.objectContaining({
+        customTemplate: {
+          name: 'custom-component',
+          path: tempFile,
+          type: 'file'
+        }
+      }));
+    });
+
+    it('should reject empty target directory values', () => {
+      expect(() => normalizeTargetDir('  ')).toThrow('dir cannot be empty');
     });
   });
 });

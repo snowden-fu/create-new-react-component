@@ -10,6 +10,7 @@ Generate React component folders from your terminal in a few seconds.
 - Non-interactive flags for scripts, npm commands, and editor integrations
 - JavaScript and TypeScript output
 - CSS Module and SCSS Module file generation
+- Target directory generation with `--dir`
 - Functional, arrow function, class, memoized, and `forwardRef` templates
 - PascalCase component name validation
 - Optional custom template files
@@ -57,6 +58,21 @@ Button/
 └── index.ts
 ```
 
+Generate into an existing or new target directory:
+
+```bash
+create-new-react-component Button --dir src/components
+```
+
+This creates:
+
+```text
+src/components/Button/
+├── Button.module.css
+├── Button.jsx
+└── index.js
+```
+
 ## Interactive Mode
 
 Run the command without a component name:
@@ -84,6 +100,7 @@ Pass the component name and options in one command:
 create-new-react-component UserCard --type functional --lang js --style css
 create-new-react-component Dialog --type forwardRef --lang ts --style scss --with-props
 create-new-react-component Badge --type memoized --style none
+create-new-react-component Button --dir src/components
 ```
 
 ### Options
@@ -93,6 +110,7 @@ create-new-react-component Badge --type memoized --style none
 | `-T, --type <type>` | `functional`, `arrow`, `class`, `memoized`, `forwardRef` | Component template to generate |
 | `-l, --lang <lang>` | `js`, `ts` | Output language |
 | `-s, --style <style>` | `css`, `scss`, `none` | Styling file to generate |
+| `-d, --dir <path>` | directory path | Target directory where the component folder should be created |
 | `--with-props` | | Adds a props parameter and a TypeScript `Props` interface when using `--lang ts` |
 | `--with-react-import` | | Adds `import React from 'react';` where applicable |
 | `-t, --template <path>` | file path | Adds a custom template file to the interactive template picker |
@@ -109,6 +127,8 @@ Default values in non-interactive mode:
 ```
 
 Class components always include the React import because they extend `React.Component`.
+
+When `--dir` points to a directory that does not exist yet, the CLI creates the parent directories automatically.
 
 ## Generated Output
 

@@ -29,10 +29,43 @@ function normalizeStyle(style) {
   return style;
 }
 
+function normalizeTargetDir(dir) {
+  if (dir === undefined || dir === null) {
+    return process.cwd();
+  }
+
+  if (typeof dir !== "string") {
+    throw new Error("dir must be a string");
+  }
+
+  const trimmedDir = dir.trim();
+
+  if (!trimmedDir) {
+    throw new Error("dir cannot be empty or whitespace only");
+  }
+
+  return path.resolve(process.cwd(), trimmedDir);
+}
+
+function resolveCustomTemplate(templateFile) {
+  if (!templateFile) {
+    return null;
+  }
+
+  const templates = getAvailableCustomTemplates(null, templateFile);
+
+  if (templates.length === 0) {
+    throw new Error(`Template file not found: ${templateFile}`);
+  }
+
+  return templates[0];
+}
+
 function buildComponentOptions(options = {}) {
   const componentType = options.type || "functional";
   const lang = options.lang || "js";
   const style = normalizeStyle(options.style === undefined ? "css" : options.style);
+  const customTemplate = resolveCustomTemplate(options.template);
 
   validateChoice("type", componentType, COMPONENT_TYPES);
   validateChoice("lang", lang, LANGUAGES);
@@ -44,7 +77,8 @@ function buildComponentOptions(options = {}) {
     style,
     withProps: Boolean(options.withProps),
     withImportReact: Boolean(options.withReactImport) || componentType === "class",
-    customTemplate: null
+    targetDir: normalizeTargetDir(options.dir),
+    customTemplate
   };
 }
 
@@ -54,6 +88,7 @@ function shouldCreateFromOptions(componentName, options) {
     options.type ||
     options.lang ||
     options.style ||
+    options.dir ||
     options.withProps ||
     options.withReactImport
   );
@@ -171,6 +206,7 @@ program
   .option('-T, --type <type>', 'component type: functional, arrow, class, memoized, or forwardRef')
   .option('-l, --lang <lang>', 'component language: js or ts')
   .option('-s, --style <style>', 'styling solution: css, scss, or none')
+  .option('-d, --dir <path>', 'target directory where the component folder should be created')
   .option('--with-props', 'include a props parameter and TypeScript Props interface')
   .option('--with-react-import', 'include a React import statement')
   .option('-t, --template <path>', 'path to custom template file')
@@ -302,15 +338,16 @@ function createComponent(componentName, options) {
   }
   
   const trimmedComponentName = componentName.trim();
-  const componentDir = path.join(process.cwd(), trimmedComponentName);
+  const targetDir = options.targetDir || process.cwd();
+  const componentDir = path.join(targetDir, trimmedComponentName);
   
   if (fs.existsSync(componentDir)) {
-    console.error(`Component ${trimmedComponentName} already exists`);
+    console.error(`Component ${trimmedComponentName} already exists in ${targetDir}`);
     return;
   }
 
   try {
-    fs.mkdirSync(componentDir);
+    fs.mkdirSync(componentDir, { recursive: true });
     
     if (options.customTemplate) {
       createComponentFromCustomTemplate(trimmedComponentName, componentDir, options);
@@ -323,7 +360,7 @@ function createComponent(componentName, options) {
         options.customTemplate 
           ? ` using custom template "${options.customTemplate.name}"` 
           : ` as ${options.componentType} component${options.style ? " with styles" : ""} (${options.lang})`
-      }`
+      } in ${componentDir}`
     );
     return componentDir;
   } catch (err) {
@@ -404,6 +441,7 @@ module.exports = {
   extractTemplateVariables,
   replaceTemplateVariables,
   validateTemplate,
+  normalizeTargetDir,
   buildComponentOptions,
   createComponent
 };

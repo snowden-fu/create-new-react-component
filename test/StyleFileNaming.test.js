@@ -69,4 +69,44 @@ describe('Style File Naming', () => {
     expect(fs.existsSync(path.join(tempDir, 'TestComponent', 'TestComponent.module'))).toBe(false);
     expect(fs.readFileSync(componentPath, 'utf8')).not.toContain('import styles');
   });
+
+  it('should create the component folder inside a target directory', () => {
+    const targetDir = path.join(tempDir, 'src', 'components');
+    const componentDir = createComponent('TestComponent', {
+      componentType: 'functional',
+      lang: 'ts',
+      style: 'scss',
+      withProps: true,
+      withImportReact: false,
+      targetDir
+    });
+
+    expect(componentDir).toBe(path.join(targetDir, 'TestComponent'));
+    expect(fs.existsSync(path.join(targetDir, 'TestComponent', 'TestComponent.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'TestComponent', 'TestComponent.module.scss'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'TestComponent', 'index.ts'))).toBe(true);
+  });
+
+  it('should create custom-template components inside a target directory', () => {
+    const targetDir = path.join(tempDir, 'src', 'components');
+    const templatePath = path.join(tempDir, 'custom-template.tsx');
+
+    fs.writeFileSync(templatePath, `const {{ComponentName}} = () => <div>{{componentName}}</div>;
+export default {{ComponentName}};`);
+
+    createComponent('TestComponent', {
+      targetDir,
+      customTemplate: {
+        name: 'custom-template',
+        path: templatePath,
+        type: 'file'
+      }
+    });
+
+    const componentPath = path.join(targetDir, 'TestComponent', 'TestComponent.tsx');
+
+    expect(fs.existsSync(componentPath)).toBe(true);
+    expect(fs.readFileSync(componentPath, 'utf8')).toContain('const TestComponent');
+    expect(fs.existsSync(path.join(targetDir, 'TestComponent', 'index.ts'))).toBe(true);
+  });
 });
