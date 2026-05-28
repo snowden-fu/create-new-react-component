@@ -1,5 +1,10 @@
 # create-new-react-component
 
+[![npm version](https://img.shields.io/npm/v/create-new-react-component.svg)](https://www.npmjs.com/package/create-new-react-component)
+[![npm downloads](https://img.shields.io/npm/dm/create-new-react-component.svg)](https://www.npmjs.com/package/create-new-react-component)
+[![Publish to npm](https://github.com/snowden-fu/create-new-react-component/actions/workflows/publish.yml/badge.svg)](https://github.com/snowden-fu/create-new-react-component/actions/workflows/publish.yml)
+[![license](https://img.shields.io/npm/l/create-new-react-component.svg)](https://github.com/snowden-fu/create-new-react-component/blob/main/LICENSE)
+
 [中文文档](./README.zh-CN.md)
 
 Generate React component folders from your terminal in a few seconds.
