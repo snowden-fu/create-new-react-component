@@ -18,6 +18,7 @@ Generate React component folders from your terminal in a few seconds.
 - JavaScript and TypeScript output
 - CSS Module and SCSS Module file generation
 - Target directory generation with `--dir`
+- Optional component test file generation with `--with-test`
 - Functional, arrow function, class, memoized, and `forwardRef` templates
 - PascalCase component name validation
 - Optional custom template files
@@ -53,7 +54,7 @@ create-new-react-component
 Or generate a component directly:
 
 ```bash
-create-new-react-component Button --type arrow --lang ts --style scss --with-props
+create-new-react-component Button --type arrow --lang ts --style scss --with-props --with-test
 ```
 
 This creates:
@@ -61,6 +62,7 @@ This creates:
 ```text
 Button/
 ├── Button.module.scss
+├── Button.test.tsx
 ├── Button.tsx
 └── index.ts
 ```
@@ -96,6 +98,7 @@ The prompt asks for:
 4. Styling solution
 5. Props support
 6. React import preference
+7. Test file generation
 
 Component names must be PascalCase.
 
@@ -108,6 +111,7 @@ create-new-react-component UserCard --type functional --lang js --style css
 create-new-react-component Dialog --type forwardRef --lang ts --style scss --with-props
 create-new-react-component Badge --type memoized --style none
 create-new-react-component Button --dir src/components
+create-new-react-component Button --with-test
 ```
 
 ### Options
@@ -120,6 +124,7 @@ create-new-react-component Button --dir src/components
 | `-d, --dir <path>` | directory path | Target directory where the component folder should be created |
 | `--with-props` | | Adds a props parameter and a TypeScript `Props` interface when using `--lang ts` |
 | `--with-react-import` | | Adds `import React from 'react';` where applicable |
+| `--with-test` | | Adds a basic `Component.test.jsx` or `Component.test.tsx` file |
 | `-t, --template <path>` | file path | Adds a custom template file to the interactive template picker |
 | `--template-dir <path>` | directory path | Adds all supported custom templates in a directory to the interactive template picker |
 | `-h, --help` | | Shows CLI help |
@@ -169,6 +174,21 @@ The barrel file exports the component:
 
 ```ts
 export { default } from './Button';
+```
+
+With `--with-test`, the CLI also creates a test file beside the component:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import Button from './Button';
+
+describe('Button', () => {
+  it('renders without crashing', () => {
+    render(<Button />);
+
+    expect(screen).toBeDefined();
+  });
+});
 ```
 
 ## Component Types

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Target directory generation with `--dir`, including automatic parent directory creation.
 - Test coverage for target-directory output with built-in and custom templates.
+- Optional component test file generation with `--with-test`.
 
 ## [1.6.0] - 2026-05-17
 

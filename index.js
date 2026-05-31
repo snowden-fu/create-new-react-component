@@ -77,6 +77,7 @@ function buildComponentOptions(options = {}) {
     style,
     withProps: Boolean(options.withProps),
     withImportReact: Boolean(options.withReactImport) || componentType === "class",
+    withTest: Boolean(options.withTest),
     targetDir: normalizeTargetDir(options.dir),
     customTemplate
   };
@@ -90,7 +91,8 @@ function shouldCreateFromOptions(componentName, options) {
     options.style ||
     options.dir ||
     options.withProps ||
-    options.withReactImport
+    options.withReactImport ||
+    options.withTest
   );
 }
 
@@ -209,6 +211,7 @@ program
   .option('-d, --dir <path>', 'target directory where the component folder should be created')
   .option('--with-props', 'include a props parameter and TypeScript Props interface')
   .option('--with-react-import', 'include a React import statement')
+  .option('--with-test', 'include a basic component test file')
   .option('-t, --template <path>', 'path to custom template file')
   .option('--template-dir <path>', 'path to custom templates directory')
   .action(async (componentName, options) => {
@@ -307,6 +310,12 @@ program
           message: 'Would you like to include React import statement?',
           default: (answers) => answers.componentType === 'class',
           when: (answers) => !answers.customTemplate
+        },
+        {
+          type: 'confirm',
+          name: 'withTest',
+          message: 'Would you like to include a test file?',
+          default: false
         }
       );
 
@@ -318,6 +327,7 @@ program
         style: answers.style,
         withProps: answers.withProps,
         withImportReact: answers.withImportReact || answers.componentType === 'class',
+        withTest: answers.withTest,
         customTemplate: answers.customTemplate
       });
     } catch (error) {
@@ -390,13 +400,39 @@ function createComponentFromCustomTemplate(componentName, componentDir, options)
   
   fs.writeFileSync(componentFilePath, processedContent);
   fs.writeFileSync(indexFilePath, `export { default } from './${componentName}';`);
+
+  if (options.withTest) {
+    createTestFile(componentName, componentDir, extension);
+  }
+}
+
+function getTestFileContent(componentName) {
+  return `import { render, screen } from '@testing-library/react';
+import ${componentName} from './${componentName}';
+
+describe('${componentName}', () => {
+  it('renders without crashing', () => {
+    render(<${componentName} />);
+
+    expect(screen).toBeDefined();
+  });
+});
+`;
+}
+
+function createTestFile(componentName, componentDir, componentExtension) {
+  const testExtension = componentExtension.includes('ts') ? 'tsx' : 'jsx';
+  const testFilePath = path.join(componentDir, `${componentName}.test.${testExtension}`);
+
+  fs.writeFileSync(testFilePath, getTestFileContent(componentName));
 }
 
 function createComponentFromBuiltInTemplate(componentName, componentDir, options) {
+  const componentExtension = options.lang === "ts" ? "tsx" : "jsx";
   const indexFilePath = path.join(componentDir, `index.${options.lang}`);
   const componentFilePath = path.join(
     componentDir,
-    `${componentName}.${options.lang === "ts" ? "tsx" : "jsx"}`
+    `${componentName}.${componentExtension}`
   );
   const stylesFilePath = path.join(
     componentDir,
@@ -427,6 +463,9 @@ function createComponentFromBuiltInTemplate(componentName, componentDir, options
   if (options.style) {
     fs.writeFileSync(stylesFilePath, stylesFileContent);
   }
+  if (options.withTest) {
+    createTestFile(componentName, componentDir, componentExtension);
+  }
 }
 
 // Only run CLI when executed directly
@@ -443,5 +482,6 @@ module.exports = {
   validateTemplate,
   normalizeTargetDir,
   buildComponentOptions,
+  getTestFileContent,
   createComponent
 };

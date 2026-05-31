@@ -206,6 +206,7 @@ const {{ComponentName}} = () => {
         style: 'css',
         withProps: false,
         withImportReact: false,
+        withTest: false,
         targetDir: process.cwd(),
         customTemplate: null
       }));
@@ -223,6 +224,7 @@ const {{ComponentName}} = () => {
         style: null,
         withProps: true,
         withImportReact: true,
+        withTest: false,
         targetDir: process.cwd(),
         customTemplate: null
       }));
@@ -237,6 +239,12 @@ const {{ComponentName}} = () => {
     it('should resolve a target directory option', () => {
       expect(buildComponentOptions({ dir: 'src/components' })).toEqual(expect.objectContaining({
         targetDir: path.resolve(process.cwd(), 'src/components')
+      }));
+    });
+
+    it('should include test generation when requested', () => {
+      expect(buildComponentOptions({ withTest: true })).toEqual(expect.objectContaining({
+        withTest: true
       }));
     });
 

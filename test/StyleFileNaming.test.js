@@ -87,6 +87,38 @@ describe('Style File Naming', () => {
     expect(fs.existsSync(path.join(targetDir, 'TestComponent', 'index.ts'))).toBe(true);
   });
 
+  it('should create a JavaScript test file when requested', () => {
+    createComponent('TestComponent', {
+      componentType: 'functional',
+      lang: 'js',
+      style: 'css',
+      withProps: false,
+      withImportReact: false,
+      withTest: true
+    });
+
+    const testPath = path.join(tempDir, 'TestComponent', 'TestComponent.test.jsx');
+    const testContent = fs.readFileSync(testPath, 'utf8');
+
+    expect(fs.existsSync(testPath)).toBe(true);
+    expect(testContent).toContain("import { render, screen } from '@testing-library/react';");
+    expect(testContent).toContain("import TestComponent from './TestComponent';");
+    expect(testContent).toContain('render(<TestComponent />);');
+  });
+
+  it('should create a TypeScript test file when requested', () => {
+    createComponent('TestComponent', {
+      componentType: 'functional',
+      lang: 'ts',
+      style: 'scss',
+      withProps: false,
+      withImportReact: false,
+      withTest: true
+    });
+
+    expect(fs.existsSync(path.join(tempDir, 'TestComponent', 'TestComponent.test.tsx'))).toBe(true);
+  });
+
   it('should create custom-template components inside a target directory', () => {
     const targetDir = path.join(tempDir, 'src', 'components');
     const templatePath = path.join(tempDir, 'custom-template.tsx');
@@ -108,5 +140,23 @@ export default {{ComponentName}};`);
     expect(fs.existsSync(componentPath)).toBe(true);
     expect(fs.readFileSync(componentPath, 'utf8')).toContain('const TestComponent');
     expect(fs.existsSync(path.join(targetDir, 'TestComponent', 'index.ts'))).toBe(true);
+  });
+
+  it('should create custom-template test files when requested', () => {
+    const templatePath = path.join(tempDir, 'custom-template.tsx');
+
+    fs.writeFileSync(templatePath, `const {{ComponentName}} = () => <div>{{componentName}}</div>;
+export default {{ComponentName}};`);
+
+    createComponent('TestComponent', {
+      withTest: true,
+      customTemplate: {
+        name: 'custom-template',
+        path: templatePath,
+        type: 'file'
+      }
+    });
+
+    expect(fs.existsSync(path.join(tempDir, 'TestComponent', 'TestComponent.test.tsx'))).toBe(true);
   });
 });
