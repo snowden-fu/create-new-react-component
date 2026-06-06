@@ -10,6 +10,16 @@ const packageJson = require("./package.json");
 const COMPONENT_TYPES = ["functional", "arrow", "class", "memoized", "forwardRef"];
 const LANGUAGES = ["js", "ts"];
 const STYLES = ["css", "scss", "none"];
+const CONFIG_FILE_NAME = ".cnrc.json";
+const CONFIG_FIELDS = [
+  "lang",
+  "style",
+  "componentType",
+  "withProps",
+  "withReactImport",
+  "withTest",
+  "baseDir"
+];
 
 function validateChoice(name, value, choices) {
   if (value === undefined || value === null) {
@@ -47,6 +57,65 @@ function normalizeTargetDir(dir) {
   return path.resolve(process.cwd(), trimmedDir);
 }
 
+function validateBoolean(name, value) {
+  if (value !== undefined && typeof value !== "boolean") {
+    throw new Error(`${name} must be a boolean`);
+  }
+}
+
+function loadProjectConfig(cwd = process.cwd()) {
+  const configPath = path.join(cwd, CONFIG_FILE_NAME);
+
+  if (!fs.existsSync(configPath)) {
+    return {};
+  }
+
+  let config;
+
+  try {
+    config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  } catch (error) {
+    throw new Error(`Failed to read ${CONFIG_FILE_NAME}: ${error.message}`);
+  }
+
+  if (!config || Array.isArray(config) || typeof config !== "object") {
+    throw new Error(`${CONFIG_FILE_NAME} must contain a JSON object`);
+  }
+
+  Object.keys(config).forEach((field) => {
+    if (!CONFIG_FIELDS.includes(field)) {
+      throw new Error(`${CONFIG_FILE_NAME} contains unsupported field: ${field}`);
+    }
+  });
+
+  validateChoice("lang", config.lang, LANGUAGES);
+  validateChoice("style", config.style, STYLES);
+  validateChoice("componentType", config.componentType, COMPONENT_TYPES);
+  validateBoolean("withProps", config.withProps);
+  validateBoolean("withReactImport", config.withReactImport);
+  validateBoolean("withTest", config.withTest);
+
+  if (config.baseDir !== undefined && typeof config.baseDir !== "string") {
+    throw new Error("baseDir must be a string");
+  }
+
+  return config;
+}
+
+function mergeConfigWithCliOptions(options = {}, config = {}) {
+  return {
+    type: options.type || config.componentType,
+    lang: options.lang || config.lang,
+    style: options.style === undefined ? config.style : options.style,
+    dir: options.dir || config.baseDir,
+    withProps: options.withProps || config.withProps,
+    withReactImport: options.withReactImport || config.withReactImport,
+    withTest: options.withTest || config.withTest,
+    template: options.template,
+    templateDir: options.templateDir
+  };
+}
+
 function resolveCustomTemplate(templateFile) {
   if (!templateFile) {
     return null;
@@ -61,24 +130,25 @@ function resolveCustomTemplate(templateFile) {
   return templates[0];
 }
 
-function buildComponentOptions(options = {}) {
-  const componentType = options.type || "functional";
-  const lang = options.lang || "js";
-  const style = normalizeStyle(options.style === undefined ? "css" : options.style);
+function buildComponentOptions(options = {}, config = {}) {
+  const mergedOptions = mergeConfigWithCliOptions(options, config);
+  const componentType = mergedOptions.type || "functional";
+  const lang = mergedOptions.lang || "js";
+  const style = normalizeStyle(mergedOptions.style === undefined ? "css" : mergedOptions.style);
   const customTemplate = resolveCustomTemplate(options.template);
 
   validateChoice("type", componentType, COMPONENT_TYPES);
   validateChoice("lang", lang, LANGUAGES);
-  validateChoice("style", options.style, STYLES);
+  validateChoice("style", mergedOptions.style, STYLES);
 
   return {
     componentType,
     lang,
     style,
-    withProps: Boolean(options.withProps),
-    withImportReact: Boolean(options.withReactImport) || componentType === "class",
-    withTest: Boolean(options.withTest),
-    targetDir: normalizeTargetDir(options.dir),
+    withProps: Boolean(mergedOptions.withProps),
+    withImportReact: Boolean(mergedOptions.withReactImport) || componentType === "class",
+    withTest: Boolean(mergedOptions.withTest),
+    targetDir: normalizeTargetDir(mergedOptions.dir),
     customTemplate
   };
 }
@@ -216,12 +286,16 @@ program
   .option('--template-dir <path>', 'path to custom templates directory')
   .action(async (componentName, options) => {
     try {
+      const projectConfig = loadProjectConfig();
+      const mergedOptions = mergeConfigWithCliOptions(options, projectConfig);
+
       if (shouldCreateFromOptions(componentName, options)) {
-        createComponent(componentName, buildComponentOptions(options));
+        createComponent(componentName, buildComponentOptions(options, projectConfig));
         return;
       }
 
       const customTemplates = getAvailableCustomTemplates(options.templateDir, options.template);
+      const promptTargetDir = normalizeTargetDir(mergedOptions.dir);
       
       const questions = [
         {
@@ -235,9 +309,9 @@ program
             }
             
             // Check if component directory already exists
-            const componentDir = path.join(process.cwd(), input.trim());
+            const componentDir = path.join(promptTargetDir, input.trim());
             if (fs.existsSync(componentDir)) {
-              return `Component directory "${input.trim()}" already exists in the current directory`;
+              return `Component directory "${input.trim()}" already exists in ${promptTargetDir}`;
             }
             
             return true;
@@ -274,7 +348,7 @@ program
             { name: 'Memoized Component (React.memo)', value: COMPONENT_TYPES[3] },
             { name: 'ForwardRef Component (React.forwardRef)', value: COMPONENT_TYPES[4] }
           ],
-          default: 'functional',
+          default: mergedOptions.type || 'functional',
           when: (answers) => !answers.customTemplate
         },
         {
@@ -282,7 +356,7 @@ program
           name: 'lang',
           message: 'What language would you like to use?',
           choices: LANGUAGES,
-          default: 'js',
+          default: mergedOptions.lang || 'js',
           when: (answers) => !answers.customTemplate
         },
         {
@@ -294,28 +368,28 @@ program
             { name: 'SCSS', value: 'scss' },
             { name: 'None', value: null }
           ],
-          default: 'css',
+          default: mergedOptions.style === undefined ? 'css' : normalizeStyle(mergedOptions.style),
           when: (answers) => !answers.customTemplate
         },
         {
           type: 'confirm',
           name: 'withProps',
           message: 'Would you like to include props in your component?',
-          default: false,
+          default: Boolean(mergedOptions.withProps),
           when: (answers) => !answers.customTemplate
         },
         {
           type: 'confirm',
           name: 'withImportReact',
           message: 'Would you like to include React import statement?',
-          default: (answers) => answers.componentType === 'class',
+          default: (answers) => Boolean(mergedOptions.withReactImport) || answers.componentType === 'class',
           when: (answers) => !answers.customTemplate
         },
         {
           type: 'confirm',
           name: 'withTest',
           message: 'Would you like to include a test file?',
-          default: false
+          default: Boolean(mergedOptions.withTest)
         }
       );
 
@@ -328,6 +402,7 @@ program
         withProps: answers.withProps,
         withImportReact: answers.withImportReact || answers.componentType === 'class',
         withTest: answers.withTest,
+        targetDir: promptTargetDir,
         customTemplate: answers.customTemplate
       });
     } catch (error) {
@@ -480,6 +555,8 @@ module.exports = {
   extractTemplateVariables,
   replaceTemplateVariables,
   validateTemplate,
+  loadProjectConfig,
+  mergeConfigWithCliOptions,
   normalizeTargetDir,
   buildComponentOptions,
   getTestFileContent,

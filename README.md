@@ -15,6 +15,7 @@ Generate React component folders from your terminal in a few seconds.
 
 - Interactive component creation for quick project work
 - Non-interactive flags for scripts, npm commands, and editor integrations
+- Project defaults from `.cnrc.json`
 - JavaScript and TypeScript output
 - CSS Module and SCSS Module file generation
 - Target directory generation with `--dir`
@@ -114,6 +115,19 @@ create-new-react-component Button --dir src/components
 create-new-react-component Button --with-test
 ```
 
+You can also set project defaults in `.cnrc.json`:
+
+```json
+{
+  "lang": "ts",
+  "style": "scss",
+  "componentType": "arrow",
+  "withProps": true,
+  "withTest": true,
+  "baseDir": "src/components"
+}
+```
+
 ### Options
 
 | Option | Values | Description |
@@ -136,6 +150,47 @@ Default values in non-interactive mode:
 --type functional
 --lang js
 --style css
+```
+
+## Project Config
+
+Add `.cnrc.json` to a project root to set defaults for interactive and direct generation.
+
+Supported fields:
+
+| Field | Values | Description |
+| --- | --- | --- |
+| `lang` | `js`, `ts` | Default output language |
+| `style` | `css`, `scss`, `none` | Default style file behavior |
+| `componentType` | `functional`, `arrow`, `class`, `memoized`, `forwardRef` | Default built-in component template |
+| `withProps` | `true`, `false` | Default props stub behavior |
+| `withReactImport` | `true`, `false` | Default React import behavior |
+| `withTest` | `true`, `false` | Default component test file behavior |
+| `baseDir` | directory path | Default target directory |
+
+Precedence is:
+
+```text
+CLI flags > .cnrc.json > built-in defaults
+```
+
+For example, this config makes `create-new-react-component Button` generate `src/components/Button/Button.tsx`, `Button.module.scss`, `Button.test.tsx`, and `index.ts`:
+
+```json
+{
+  "lang": "ts",
+  "style": "scss",
+  "componentType": "arrow",
+  "withProps": true,
+  "withTest": true,
+  "baseDir": "src/components"
+}
+```
+
+CLI flags override config values:
+
+```bash
+create-new-react-component Button --lang js --style none --dir lib/ui
 ```
 
 Class components always include the React import because they extend `React.Component`.

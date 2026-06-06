@@ -1,8 +1,16 @@
 {
   "name": "create-new-react-component",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "an utility to create a new react component with a single command",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "ComponentFileContent.js",
+    "ValidateComponentName.js",
+    "README.md",
+    "README.zh-CN.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "create-new-react-component": "node index.js",
     "test": "jest"

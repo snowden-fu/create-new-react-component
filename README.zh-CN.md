@@ -10,6 +10,7 @@
 
 - 交互式创建组件，适合日常开发
 - 非交互式参数，适合脚本、npm scripts 和编辑器集成
+- 支持通过 `.cnrc.json` 设置项目默认值
 - 支持 JavaScript 和 TypeScript 输出
 - 支持 CSS Module 和 SCSS Module 文件生成
 - 支持通过 `--dir` 指定目标目录
@@ -103,6 +104,20 @@ create-new-react-component UserCard --type functional --lang js --style css
 create-new-react-component Dialog --type forwardRef --lang ts --style scss --with-props
 create-new-react-component Badge --type memoized --style none
 create-new-react-component Button --dir src/components
+create-new-react-component Button --with-test
+```
+
+也可以在 `.cnrc.json` 中设置项目默认值：
+
+```json
+{
+  "lang": "ts",
+  "style": "scss",
+  "componentType": "arrow",
+  "withProps": true,
+  "withTest": true,
+  "baseDir": "src/components"
+}
 ```
 
 ### 参数说明
@@ -115,6 +130,7 @@ create-new-react-component Button --dir src/components
 | `-d, --dir <path>` | 目录路径 | 组件目录要生成到的位置 |
 | `--with-props` | | 添加 props 参数；TypeScript 模式下会生成 `Props` interface |
 | `--with-react-import` | | 在适用场景下添加 `import React from 'react';` |
+| `--with-test` | | 添加基础的 `Component.test.jsx` 或 `Component.test.tsx` 测试文件 |
 | `-t, --template <path>` | 文件路径 | 将自定义模板文件加入交互式模板选择列表 |
 | `--template-dir <path>` | 目录路径 | 将目录中的自定义模板加入交互式模板选择列表 |
 | `-h, --help` | | 查看帮助信息 |
@@ -126,6 +142,47 @@ create-new-react-component Button --dir src/components
 --type functional
 --lang js
 --style css
+```
+
+## 项目配置
+
+在项目根目录添加 `.cnrc.json`，即可为交互式和直接生成组件设置默认值。
+
+支持字段：
+
+| 字段 | 可选值 | 说明 |
+| --- | --- | --- |
+| `lang` | `js`, `ts` | 默认输出语言 |
+| `style` | `css`, `scss`, `none` | 默认样式文件行为 |
+| `componentType` | `functional`, `arrow`, `class`, `memoized`, `forwardRef` | 默认内置组件模板 |
+| `withProps` | `true`, `false` | 默认是否生成 props 占位代码 |
+| `withReactImport` | `true`, `false` | 默认是否生成 React import |
+| `withTest` | `true`, `false` | 默认是否生成组件测试文件 |
+| `baseDir` | 目录路径 | 默认目标目录 |
+
+优先级：
+
+```text
+命令行参数 > .cnrc.json > 内置默认值
+```
+
+例如，下面的配置会让 `create-new-react-component Button` 生成 `src/components/Button/Button.tsx`、`Button.module.scss`、`Button.test.tsx` 和 `index.ts`：
+
+```json
+{
+  "lang": "ts",
+  "style": "scss",
+  "componentType": "arrow",
+  "withProps": true,
+  "withTest": true,
+  "baseDir": "src/components"
+}
+```
+
+命令行参数会覆盖配置文件：
+
+```bash
+create-new-react-component Button --lang js --style none --dir lib/ui
 ```
 
 class 组件会自动包含 React import，因为它会继承 `React.Component`。

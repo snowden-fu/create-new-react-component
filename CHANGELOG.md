@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-06-06
+
 ### Added
 - Target directory generation with `--dir`, including automatic parent directory creation.
 - Test coverage for target-directory output with built-in and custom templates.
 - Optional component test file generation with `--with-test`.
+- Project config support with `.cnrc.json`.
+- Package publish allowlist with the `files` field.
+- Dedicated CI test matrix for Node 18, 20, 22, and 24.
 
 ## [1.6.0] - 2026-05-17
 

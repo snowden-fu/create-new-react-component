@@ -8,6 +8,8 @@ const {
   extractTemplateVariables,
   replaceTemplateVariables,
   validateTemplate,
+  loadProjectConfig,
+  mergeConfigWithCliOptions,
   normalizeTargetDir,
   buildComponentOptions
 } = require('../index');
@@ -244,6 +246,110 @@ const {{ComponentName}} = () => {
 
     it('should include test generation when requested', () => {
       expect(buildComponentOptions({ withTest: true })).toEqual(expect.objectContaining({
+        withTest: true
+      }));
+    });
+
+    it('should load supported project config fields from .cnrc.json', () => {
+      fs.writeFileSync(path.join(tempDir, '.cnrc.json'), JSON.stringify({
+        lang: 'ts',
+        style: 'scss',
+        componentType: 'arrow',
+        withProps: true,
+        withReactImport: true,
+        withTest: true,
+        baseDir: 'src/components'
+      }));
+
+      expect(loadProjectConfig(tempDir)).toEqual({
+        lang: 'ts',
+        style: 'scss',
+        componentType: 'arrow',
+        withProps: true,
+        withReactImport: true,
+        withTest: true,
+        baseDir: 'src/components'
+      });
+    });
+
+    it('should return an empty config when .cnrc.json is not present', () => {
+      expect(loadProjectConfig(tempDir)).toEqual({});
+    });
+
+    it('should reject unsupported project config values', () => {
+      fs.writeFileSync(path.join(tempDir, '.cnrc.json'), JSON.stringify({
+        lang: 'tsx'
+      }));
+
+      expect(() => loadProjectConfig(tempDir)).toThrow('lang must be one of');
+    });
+
+    it('should reject unsupported project config fields', () => {
+      fs.writeFileSync(path.join(tempDir, '.cnrc.json'), JSON.stringify({
+        outputDir: 'src/components'
+      }));
+
+      expect(() => loadProjectConfig(tempDir)).toThrow('unsupported field');
+    });
+
+    it('should merge config values over defaults', () => {
+      expect(buildComponentOptions({}, {
+        componentType: 'arrow',
+        lang: 'ts',
+        style: 'scss',
+        withProps: true,
+        withReactImport: true,
+        withTest: true,
+        baseDir: 'src/components'
+      })).toEqual(expect.objectContaining({
+        componentType: 'arrow',
+        lang: 'ts',
+        style: 'scss',
+        withProps: true,
+        withImportReact: true,
+        withTest: true,
+        targetDir: path.resolve(process.cwd(), 'src/components')
+      }));
+    });
+
+    it('should let CLI flags override project config values', () => {
+      expect(buildComponentOptions({
+        type: 'memoized',
+        lang: 'js',
+        style: 'none',
+        dir: 'lib/ui',
+        withReactImport: true
+      }, {
+        componentType: 'arrow',
+        lang: 'ts',
+        style: 'scss',
+        withProps: true,
+        withTest: true,
+        baseDir: 'src/components'
+      })).toEqual(expect.objectContaining({
+        componentType: 'memoized',
+        lang: 'js',
+        style: null,
+        withProps: true,
+        withImportReact: true,
+        withTest: true,
+        targetDir: path.resolve(process.cwd(), 'lib/ui')
+      }));
+    });
+
+    it('should map config and CLI fields into a single option shape', () => {
+      expect(mergeConfigWithCliOptions({
+        lang: 'js',
+        dir: 'components'
+      }, {
+        lang: 'ts',
+        componentType: 'forwardRef',
+        baseDir: 'src/components',
+        withTest: true
+      })).toEqual(expect.objectContaining({
+        type: 'forwardRef',
+        lang: 'js',
+        dir: 'components',
         withTest: true
       }));
     });
