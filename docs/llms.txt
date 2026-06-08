@@ -1,0 +1,38 @@
+# create-new-react-component
+
+> React component generator CLI for creating JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional tests.
+
+## Links
+
+- Homepage: https://cnrc.zhengfu.me/
+- GitHub: https://github.com/snowden-fu/create-new-react-component
+- npm: https://www.npmjs.com/package/create-new-react-component
+- Documentation: https://github.com/snowden-fu/create-new-react-component#readme
+
+## Install
+
+```bash
+npx create-new-react-component Button
+```
+
+```bash
+npm install --save-dev create-new-react-component
+```
+
+## Common commands
+
+```bash
+create-new-react-component Button --lang ts --style scss --with-test
+create-new-react-component Card --type forwardRef --with-props
+create-new-react-component Badge --style none --dir src/components
+```
+
+## Features
+
+- Interactive and non-interactive React component generation.
+- JavaScript and TypeScript output.
+- CSS Modules, SCSS Modules, or no generated style file.
+- Functional, arrow function, class, memoized, and forwardRef templates.
+- Optional generated component test files with `--with-test`.
+- Project defaults from `.cnrc.json`.
+- Custom template files with `--template` and `--template-dir`.

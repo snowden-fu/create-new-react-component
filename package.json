@@ -1,7 +1,7 @@
 {
   "name": "create-new-react-component",
   "version": "1.7.0",
-  "description": "an utility to create a new react component with a single command",
+  "description": "Generate React component folders from the terminal with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, and tests.",
   "main": "index.js",
   "files": [
     "index.js",
@@ -31,17 +31,32 @@
   "keywords": [
     "react",
     "component",
+    "react-component",
+    "react-component-generator",
+    "react-cli",
+    "react-generator",
+    "component-generator",
+    "component-scaffold",
     "create",
     "new",
     "utility",
     "command",
     "cli",
     "tool",
-    "generator"
+    "generator",
+    "typescript",
+    "tsx",
+    "css-modules",
+    "scss-modules",
+    "npx"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/snowden-fu/create-new-react-component"
+  },
+  "homepage": "https://cnrc.zhengfu.me",
+  "bugs": {
+    "url": "https://github.com/snowden-fu/create-new-react-component/issues"
   },
   "license": "MIT",
   "devDependencies": {

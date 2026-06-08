@@ -276,14 +276,16 @@ code {
   max-width: 760px;
 }
 
-.template-grid {
+.template-grid,
+.faq-grid {
   display: grid;
   gap: 14px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 32px;
 }
 
-.template-grid article {
+.template-grid article,
+.faq-grid article {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -291,8 +293,25 @@ code {
   padding: 24px;
 }
 
-.template-grid p {
+.template-grid p,
+.faq-grid p {
   font-size: 0.98rem;
+}
+
+.faq {
+  background: rgba(15, 118, 110, 0.05);
+}
+
+.faq-grid article {
+  min-height: 210px;
+}
+
+.faq-grid code {
+  background: rgba(23, 32, 38, 0.07);
+  border-radius: 4px;
+  color: var(--ink);
+  font-size: 0.9em;
+  padding: 2px 5px;
 }
 
 .inline-link {
@@ -339,7 +358,8 @@ code {
   .hero,
   .split,
   .split.reverse,
-  .template-grid {
+  .template-grid,
+  .faq-grid {
     grid-template-columns: 1fr;
   }
 
