@@ -277,7 +277,9 @@ code {
 }
 
 .template-grid,
-.faq-grid {
+.faq-grid,
+.use-case-grid,
+.option-grid {
   display: grid;
   gap: 14px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -285,7 +287,9 @@ code {
 }
 
 .template-grid article,
-.faq-grid article {
+.faq-grid article,
+.use-case-grid article,
+.option-grid article {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -294,8 +298,24 @@ code {
 }
 
 .template-grid p,
-.faq-grid p {
+.faq-grid p,
+.use-case-grid p,
+.option-grid p {
   font-size: 0.98rem;
+}
+
+.use-case-grid code,
+.option-grid code {
+  background: rgba(23, 32, 38, 0.07);
+  border-radius: 4px;
+  color: var(--ink);
+  font-size: 0.9em;
+  padding: 2px 5px;
+}
+
+.option-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0;
 }
 
 .faq {
@@ -359,7 +379,9 @@ code {
   .split,
   .split.reverse,
   .template-grid,
-  .faq-grid {
+  .faq-grid,
+  .use-case-grid,
+  .option-grid {
     grid-template-columns: 1fr;
   }
 

@@ -11,6 +11,8 @@ Generate React component folders from your terminal in a few seconds.
 
 `create-new-react-component` can run as an interactive prompt or as a scriptable CLI command. It supports JavaScript, TypeScript, CSS Modules, SCSS Modules, props stubs, React imports, and several common component templates.
 
+Use it when you want a focused React component generator CLI for an existing project, not a full app scaffold or framework setup.
+
 ## Features
 
 - Interactive component creation for quick project work
@@ -23,6 +25,27 @@ Generate React component folders from your terminal in a few seconds.
 - Functional, arrow function, class, memoized, and `forwardRef` templates
 - PascalCase component name validation
 - Optional custom template files
+
+## Common Searches This Solves
+
+- React component generator CLI
+- TypeScript React component scaffold
+- Generate React component folder from the terminal
+- Scaffold React component with CSS Modules or SCSS Modules
+- Create React component test files from a CLI
+- Custom template React component generator
+- Project defaults for repeatable React component scaffolding
+
+## AI and Tooling Summary
+
+`create-new-react-component` is a small Node.js CLI that creates component folders for existing React projects. It is a good fit for scripts, editor commands, and team conventions where developers want predictable component files, index exports, nearby optional styles, project defaults, and optional test files.
+
+It does not create a full React app, install React, configure build tooling, or replace Vite, Next.js, Storybook, Jest, or Testing Library setup.
+
+AI-readable project summaries are available at:
+
+- https://cnrc.zhengfu.me/llms.txt
+- https://cnrc.zhengfu.me/llms-full.txt
 
 ## Installation
 
@@ -81,6 +104,32 @@ src/components/Button/
 ├── Button.module.css
 ├── Button.jsx
 └── index.js
+```
+
+## Examples
+
+Generate a TypeScript component with SCSS Modules and a test file:
+
+```bash
+create-new-react-component ProductCard --lang ts --style scss --with-test
+```
+
+Generate a `forwardRef` component with a props stub:
+
+```bash
+create-new-react-component TextInput --type forwardRef --lang ts --with-props
+```
+
+Generate without a style file:
+
+```bash
+create-new-react-component IconButton --style none
+```
+
+Generate into a shared component directory:
+
+```bash
+create-new-react-component EmptyState --dir src/components
 ```
 
 ## Interactive Mode

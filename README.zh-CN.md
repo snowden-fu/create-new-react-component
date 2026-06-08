@@ -6,6 +6,8 @@
 
 `create-new-react-component` 支持交互式创建，也支持可脚本化的命令行参数。它可以生成 JavaScript、TypeScript、CSS Modules、SCSS Modules、props 占位代码、React import，以及常见的组件模板。
 
+适合在已有 React 项目中快速生成组件目录；它不是完整应用脚手架，也不会替代 Vite、Next.js 或 Storybook。
+
 ## 功能特性
 
 - 交互式创建组件，适合日常开发
@@ -14,9 +16,19 @@
 - 支持 JavaScript 和 TypeScript 输出
 - 支持 CSS Module 和 SCSS Module 文件生成
 - 支持通过 `--dir` 指定目标目录
+- 支持通过 `--with-test` 生成组件测试文件
 - 支持 functional、arrow function、class、memoized 和 `forwardRef` 组件模板
 - PascalCase 组件名校验
 - 支持自定义模板文件
+
+## 常见搜索场景
+
+- React component generator CLI
+- TypeScript React component scaffold
+- 从终端生成 React 组件目录
+- 生成带 CSS Modules 或 SCSS Modules 的 React 组件
+- 通过 CLI 生成 React 组件测试文件
+- 支持自定义模板的 React 组件生成器
 
 ## 安装
 
@@ -49,7 +61,7 @@ create-new-react-component
 或者直接通过一条命令生成组件：
 
 ```bash
-create-new-react-component Button --type arrow --lang ts --style scss --with-props
+create-new-react-component Button --type arrow --lang ts --style scss --with-props --with-test
 ```
 
 会生成：
@@ -57,6 +69,7 @@ create-new-react-component Button --type arrow --lang ts --style scss --with-pro
 ```text
 Button/
 ├── Button.module.scss
+├── Button.test.tsx
 ├── Button.tsx
 └── index.ts
 ```
@@ -92,8 +105,35 @@ create-new-react-component
 4. 样式方案
 5. 是否生成 props 占位代码
 6. 是否添加 React import
+7. 是否生成测试文件
 
 组件名必须使用 PascalCase。
+
+## 示例
+
+生成带 SCSS Modules 和测试文件的 TypeScript 组件：
+
+```bash
+create-new-react-component ProductCard --lang ts --style scss --with-test
+```
+
+生成带 props 占位代码的 `forwardRef` 组件：
+
+```bash
+create-new-react-component TextInput --type forwardRef --lang ts --with-props
+```
+
+不生成样式文件：
+
+```bash
+create-new-react-component IconButton --style none
+```
+
+生成到共享组件目录：
+
+```bash
+create-new-react-component EmptyState --dir src/components
+```
 
 ## 非交互式模式
 

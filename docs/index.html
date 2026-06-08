@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="React component generator CLI for creating JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional tests."
+      content="React component generator CLI for scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional test files."
     >
     <meta
       name="keywords"
-      content="React component generator, React CLI, TypeScript React component generator, CSS Modules, SCSS Modules, component scaffold, npx create-new-react-component"
+      content="React component generator CLI, TypeScript React component scaffold, React CLI, CSS Modules, SCSS Modules, component scaffold, custom React templates, npx create-new-react-component"
     >
     <meta name="author" content="Snowden Fu">
     <meta name="robots" content="index, follow">
@@ -18,7 +18,7 @@
     <meta property="og:title" content="create-new-react-component">
     <meta
       property="og:description"
-      content="Generate React component folders from the terminal with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, and tests."
+      content="Scaffold React component folders from the terminal with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, project defaults, and test files."
     >
     <meta property="og:url" content="https://cnrc.zhengfu.me/">
     <meta property="og:image" content="https://cnrc.zhengfu.me/assets/logo.png">
@@ -26,35 +26,107 @@
     <meta name="twitter:title" content="create-new-react-component">
     <meta
       name="twitter:description"
-      content="Generate React component folders from the terminal with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, and tests."
+      content="Scaffold React component folders from the terminal with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, project defaults, and test files."
     >
     <meta name="twitter:image" content="https://cnrc.zhengfu.me/assets/logo.png">
-    <title>create-new-react-component | React component generator CLI</title>
+    <title>create-new-react-component | React component generator CLI for TypeScript and CSS Modules</title>
     <link rel="stylesheet" href="./styles.css">
+    <link rel="alternate" type="text/plain" title="AI-readable project summary" href="https://cnrc.zhengfu.me/llms.txt">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "create-new-react-component",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "macOS, Windows, Linux",
-        "description": "A React component generator CLI that creates JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional tests.",
-        "url": "https://cnrc.zhengfu.me/",
-        "codeRepository": "https://github.com/snowden-fu/create-new-react-component",
-        "downloadUrl": "https://www.npmjs.com/package/create-new-react-component",
-        "softwareVersion": "1.7.0",
-        "license": "https://github.com/snowden-fu/create-new-react-component/blob/main/LICENSE",
-        "programmingLanguage": "JavaScript",
-        "author": {
-          "@type": "Person",
-          "name": "Snowden Fu",
-          "url": "https://github.com/snowden-fu"
-        },
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "name": "create-new-react-component",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "macOS, Windows, Linux",
+            "description": "A React component generator CLI that scaffolds JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional test files.",
+            "url": "https://cnrc.zhengfu.me/",
+            "codeRepository": "https://github.com/snowden-fu/create-new-react-component",
+            "downloadUrl": "https://www.npmjs.com/package/create-new-react-component",
+            "softwareVersion": "1.7.0",
+            "license": "https://github.com/snowden-fu/create-new-react-component/blob/main/LICENSE",
+            "programmingLanguage": "JavaScript",
+            "runtimePlatform": "Node.js",
+            "softwareRequirements": "Node.js",
+            "author": {
+              "@type": "Person",
+              "name": "Snowden Fu",
+              "url": "https://github.com/snowden-fu"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "create-new-react-component source code",
+            "codeRepository": "https://github.com/snowden-fu/create-new-react-component",
+            "programmingLanguage": "JavaScript",
+            "runtimePlatform": "Node.js",
+            "license": "https://github.com/snowden-fu/create-new-react-component/blob/main/LICENSE",
+            "targetProduct": {
+              "@type": "SoftwareApplication",
+              "name": "create-new-react-component"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How do I generate a React component from the terminal?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Run npx create-new-react-component Button to create a Button folder with a component file and index export."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can it create TypeScript React components?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Use --lang ts to generate .tsx component files and index.ts exports."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does it support CSS Modules and SCSS Modules?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Use --style css, --style scss, or --style none to control generated style files."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I scaffold component tests?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Add --with-test to generate a sibling Component.test.jsx or Component.test.tsx file."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I set project defaults?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Add a .cnrc.json file for defaults like language, style, component type, test generation, and base directory."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use custom component templates?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Use --template for one template file or --template-dir for a directory of reusable templates."
+                }
+              }
+            ]
+          }
+        ]
       }
     </script>
   </head>
@@ -66,6 +138,8 @@
       </a>
       <nav class="nav-links" aria-label="Page sections">
         <a href="#install">Install</a>
+        <a href="#use-cases">Use cases</a>
+        <a href="#options">Options</a>
         <a href="#templates">Templates</a>
         <a href="#workflow">Workflow</a>
         <a href="#faq">FAQ</a>
@@ -79,7 +153,7 @@
           <p class="eyebrow">React component generator</p>
           <h1>Create React components from one command.</h1>
           <p class="hero-text">
-            Generate JavaScript or TypeScript React component folders with matching index files,
+            Scaffold JavaScript or TypeScript React component folders with matching index files,
             optional CSS Modules or SCSS Modules, project defaults, custom templates, and test files.
           </p>
           <div class="hero-actions" aria-label="Primary actions">
@@ -140,6 +214,80 @@ create-new-react-component Button --lang ts --style scss --with-test</code></pre
         </div>
       </section>
 
+      <section id="use-cases" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Use cases</p>
+          <h2>A focused scaffold for repeated React component work.</h2>
+          <p>
+            Use <code>create-new-react-component</code> when you want repeatable folder output
+            without introducing a full app framework, build tool, or design system dependency.
+          </p>
+        </div>
+        <div class="use-case-grid">
+          <article>
+            <h3>TypeScript component scaffold</h3>
+            <p>Create <code>.tsx</code> components, <code>index.ts</code> exports, and optional props stubs.</p>
+          </article>
+          <article>
+            <h3>CSS or SCSS Modules</h3>
+            <p>Generate nearby module files or choose <code>--style none</code> for style-free components.</p>
+          </article>
+          <article>
+            <h3>Team defaults</h3>
+            <p>Use <code>.cnrc.json</code> to keep language, style, test, and directory defaults consistent.</p>
+          </article>
+          <article>
+            <h3>Custom templates</h3>
+            <p>Bring reusable template files into the interactive picker with <code>--template</code>.</p>
+          </article>
+          <article>
+            <h3>Scriptable generation</h3>
+            <p>Run non-interactive commands from npm scripts, editor commands, or project automation.</p>
+          </article>
+          <article>
+            <h3>Test file generation</h3>
+            <p>Add <code>Component.test.jsx</code> or <code>Component.test.tsx</code> beside the component.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="options" class="section split">
+        <div>
+          <p class="eyebrow">CLI options</p>
+          <h2>Control the generated files from flags or config.</h2>
+          <p>
+            Non-interactive defaults are <code>functional</code>, <code>js</code>, and <code>css</code>.
+            CLI flags override <code>.cnrc.json</code>, and config values override the built-in defaults.
+          </p>
+        </div>
+        <div class="option-grid" aria-label="CLI option summary">
+          <article>
+            <h3><code>--lang js|ts</code></h3>
+            <p>Choose JavaScript or TypeScript component files.</p>
+          </article>
+          <article>
+            <h3><code>--style css|scss|none</code></h3>
+            <p>Generate CSS Modules, SCSS Modules, or no style file.</p>
+          </article>
+          <article>
+            <h3><code>--type</code></h3>
+            <p>Use functional, arrow, class, memoized, or forwardRef templates.</p>
+          </article>
+          <article>
+            <h3><code>--dir</code></h3>
+            <p>Create the component folder under a target directory.</p>
+          </article>
+          <article>
+            <h3><code>--with-test</code></h3>
+            <p>Add a basic sibling component test file.</p>
+          </article>
+          <article>
+            <h3><code>--template</code></h3>
+            <p>Load a custom template file or directory.</p>
+          </article>
+        </div>
+      </section>
+
       <section id="templates" class="section">
         <div class="section-heading">
           <p class="eyebrow">Templates</p>
@@ -191,6 +339,27 @@ create-new-react-component Button --lang ts --style scss --with-test</code></pre
           <a class="inline-link" href="https://github.com/snowden-fu/create-new-react-component#readme">
             Read the full documentation
           </a>
+        </div>
+      </section>
+
+      <section id="why" class="section split">
+        <div>
+          <p class="eyebrow">Why this tool</p>
+          <h2>Small enough for existing projects.</h2>
+          <p>
+            This CLI is best for teams that already have a React project and only need a quick,
+            predictable component folder convention. It avoids framework setup, keeps output readable,
+            and lets each project decide its own styling, testing, and template conventions.
+          </p>
+        </div>
+        <div class="code-panel">
+          <pre><code>create-new-react-component UserCard \
+  --type forwardRef \
+  --lang ts \
+  --style scss \
+  --with-props \
+  --with-test \
+  --dir src/components</code></pre>
         </div>
       </section>
 
