@@ -9,7 +9,7 @@
 
 Generate React component folders from your terminal in a few seconds.
 
-`create-new-react-component` can run as an interactive prompt or as a scriptable CLI command. It supports JavaScript, TypeScript, CSS Modules, SCSS Modules, props stubs, React imports, and several common component templates.
+`create-new-react-component` can run as an interactive prompt or as a scriptable CLI command. It supports batch generation, JavaScript, TypeScript, CSS Modules, SCSS Modules, props stubs, React imports, optional Prettier formatting, and several common component templates.
 
 Use it when you want a focused React component generator CLI for an existing project, not a full app scaffold or framework setup.
 
@@ -17,11 +17,13 @@ Use it when you want a focused React component generator CLI for an existing pro
 
 - Interactive component creation for quick project work
 - Non-interactive flags for scripts, npm commands, and editor integrations
+- Multiple components in one command
 - Project defaults from `.cnrc.json`
 - JavaScript and TypeScript output
 - CSS Module and SCSS Module file generation
 - Target directory generation with `--dir`
 - Optional component test file generation with `--with-test`
+- Optional project-aware Prettier formatting with `--format`
 - Functional, arrow function, class, memoized, and `forwardRef` templates
 - PascalCase component name validation
 - Optional custom template files
@@ -106,6 +108,12 @@ src/components/Button/
 └── index.js
 ```
 
+Generate several components with the same options:
+
+```bash
+create-new-react-component Button UserCard Modal --lang ts --style scss --format
+```
+
 ## Examples
 
 Generate a TypeScript component with SCSS Modules and a test file:
@@ -132,6 +140,12 @@ Generate into a shared component directory:
 create-new-react-component EmptyState --dir src/components
 ```
 
+Generate and format several components using the nearest Prettier configuration:
+
+```bash
+create-new-react-component Button UserCard Modal --lang ts --format
+```
+
 ## Interactive Mode
 
 Run the command without a component name:
@@ -142,19 +156,20 @@ create-new-react-component
 
 The prompt asks for:
 
-1. Component name, such as `Button` or `UserProfile`
+1. One or more component names, such as `Button UserProfile` or `Button, UserProfile`
 2. Component type
 3. Language
 4. Styling solution
 5. Props support
 6. React import preference
 7. Test file generation
+8. Prettier formatting
 
-Component names must be PascalCase.
+Component names must be PascalCase. The CLI validates the complete batch before creating files, so invalid, duplicate, or existing component names do not leave partial output.
 
 ## Non-Interactive Mode
 
-Pass the component name and options in one command:
+Pass one or more component names and shared options in one command:
 
 ```bash
 create-new-react-component UserCard --type functional --lang js --style css
@@ -162,6 +177,7 @@ create-new-react-component Dialog --type forwardRef --lang ts --style scss --wit
 create-new-react-component Badge --type memoized --style none
 create-new-react-component Button --dir src/components
 create-new-react-component Button --with-test
+create-new-react-component Button UserCard Modal --lang ts --format
 ```
 
 You can also set project defaults in `.cnrc.json`:
@@ -173,6 +189,7 @@ You can also set project defaults in `.cnrc.json`:
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "format": true,
   "baseDir": "src/components"
 }
 ```
@@ -188,6 +205,7 @@ You can also set project defaults in `.cnrc.json`:
 | `--with-props` | | Adds a props parameter and a TypeScript `Props` interface when using `--lang ts` |
 | `--with-react-import` | | Adds `import React from 'react';` where applicable |
 | `--with-test` | | Adds a basic `Component.test.jsx` or `Component.test.tsx` file |
+| `--format` | | Formats all generated files with Prettier |
 | `-t, --template <path>` | file path | Adds a custom template file to the interactive template picker |
 | `--template-dir <path>` | directory path | Adds all supported custom templates in a directory to the interactive template picker |
 | `-h, --help` | | Shows CLI help |
@@ -215,6 +233,7 @@ Supported fields:
 | `withProps` | `true`, `false` | Default props stub behavior |
 | `withReactImport` | `true`, `false` | Default React import behavior |
 | `withTest` | `true`, `false` | Default component test file behavior |
+| `format` | `true`, `false` | Default Prettier formatting behavior |
 | `baseDir` | directory path | Default target directory |
 
 Precedence is:
@@ -232,6 +251,7 @@ For example, this config makes `create-new-react-component Button` generate `src
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "format": true,
   "baseDir": "src/components"
 }
 ```
@@ -245,6 +265,8 @@ create-new-react-component Button --lang js --style none --dir lib/ui
 Class components always include the React import because they extend `React.Component`.
 
 When `--dir` points to a directory that does not exist yet, the CLI creates the parent directories automatically.
+
+Formatting is disabled by default. When `--format` or `"format": true` is used, the CLI formats component, index, style, test, and custom-template files using the nearest Prettier configuration and `.editorconfig`, or Prettier defaults when no project configuration exists.
 
 ## Generated Output
 

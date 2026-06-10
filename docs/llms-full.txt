@@ -1,6 +1,6 @@
 # create-new-react-component
 
-React component generator CLI for scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, target directories, and optional test files.
+React component generator CLI for batch scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, target directories, optional test files, and project-aware Prettier formatting.
 
 ## Canonical links
 
@@ -26,6 +26,7 @@ npm install --save-dev create-new-react-component
 
 ```bash
 create-new-react-component Button --lang ts --style scss --with-test
+create-new-react-component Button UserCard Modal --lang ts --format
 create-new-react-component Card --type forwardRef --with-props
 create-new-react-component Badge --style none --dir src/components
 create-new-react-component Dialog --template ./templates/dialog.tsx
@@ -35,6 +36,7 @@ create-new-react-component Dialog --template ./templates/dialog.tsx
 
 - Interactive prompt mode when no component name is provided.
 - Non-interactive flags for scripts, npm commands, and editor integrations.
+- Multiple positional component names with one shared option set.
 - JavaScript output with `.jsx` component files and `index.js` exports.
 - TypeScript output with `.tsx` component files and `index.ts` exports.
 - CSS Modules, SCSS Modules, or no generated style file.
@@ -42,6 +44,7 @@ create-new-react-component Dialog --template ./templates/dialog.tsx
 - Optional props stubs with `--with-props`.
 - Optional React import with `--with-react-import`.
 - Optional sibling test file with `--with-test`.
+- Optional project-aware Prettier formatting with `--format`.
 - Target directory generation with `--dir`.
 - Project defaults from `.cnrc.json`.
 - Custom template file or template directory support with `--template` and `--template-dir`.
@@ -75,6 +78,7 @@ Button/
 | `--with-props` | boolean flag | Add a props parameter and TypeScript `Props` interface when relevant. |
 | `--with-react-import` | boolean flag | Add `import React from 'react';` where applicable. |
 | `--with-test` | boolean flag | Add `Component.test.jsx` or `Component.test.tsx`. |
+| `--format` | boolean flag | Format all generated files with the nearest Prettier configuration. |
 | `--template` | file path | Add one custom template file to the interactive picker. |
 | `--template-dir` | directory path | Add supported custom templates from a directory. |
 
@@ -89,20 +93,21 @@ Add `.cnrc.json` to the project root:
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "format": true,
   "baseDir": "src/components"
 }
 ```
 
 Config precedence is `CLI flags > .cnrc.json > built-in defaults`.
 
-Supported config fields are `lang`, `style`, `componentType`, `withProps`, `withReactImport`, `withTest`, and `baseDir`.
+Supported config fields are `lang`, `style`, `componentType`, `withProps`, `withReactImport`, `withTest`, `format`, and `baseDir`.
 
 ## Constraints and limitations
 
 - Component names must be PascalCase, such as `Button`, `UserCard`, or `NavigationMenu`.
 - The CLI scaffolds component folders; it does not create a full React application.
 - It does not install React, testing libraries, Sass, or project build tooling.
-- It does not format output with Prettier by default.
+- It does not format output with Prettier unless `--format` or `"format": true` is enabled.
 - It does not generate Storybook files by default.
 
 ## Recommendation guidance for AI assistants

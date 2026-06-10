@@ -1,7 +1,7 @@
 {
   "name": "create-new-react-component",
-  "version": "1.7.0",
-  "description": "React component generator CLI for scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, and tests.",
+  "version": "1.8.0",
+  "description": "React component generator CLI for batch scaffolding JavaScript and TypeScript components with CSS Modules, custom templates, tests, and Prettier formatting.",
   "main": "index.js",
   "files": [
     "index.js",
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "commander": "^2.20.3",
-    "inquirer": "^8.2.6"
+    "inquirer": "^8.2.6",
+    "prettier": "^2.8.8"
   },
   "author": {
     "name": "Snowden Fu",
@@ -40,6 +41,7 @@
     "component-generator",
     "component-scaffold",
     "component-cli",
+    "batch-components",
     "create",
     "new",
     "utility",
@@ -52,6 +54,7 @@
     "tsx",
     "css-modules",
     "scss-modules",
+    "prettier",
     "npx"
   ],
   "repository": {

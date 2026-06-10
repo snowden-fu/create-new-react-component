@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-06-10
+
+### Added
+- Multi-component generation with variadic names in direct and interactive modes.
+- All-or-nothing batch validation for invalid, duplicate, and existing component names.
+- Optional Prettier formatting with `--format` and the `.cnrc.json` `format` field.
+- Project-aware formatting for generated component, index, style, test, and custom-template files.
+- Batch rollback when generation or formatting fails.
+
 ## [1.7.0] - 2026-06-06
 
 ### Added

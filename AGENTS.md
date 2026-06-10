@@ -4,7 +4,7 @@ Guidance for AI coding agents working in this repository.
 
 ## Project Snapshot
 
-`create-new-react-component` is a Node.js CLI for generating React component folders. It supports interactive prompts and scriptable flags for JavaScript/TypeScript, CSS/SCSS modules, component template variants, custom templates, project defaults from `.cnrc.json`, target directories, and optional generated test files.
+`create-new-react-component` is a Node.js CLI for generating React component folders. It supports interactive prompts and scriptable flags for batch generation, JavaScript/TypeScript, CSS/SCSS modules, component template variants, custom templates, project defaults from `.cnrc.json`, target directories, optional generated test files, and opt-in Prettier formatting.
 
 Keep changes centered on the CLI behavior and generated output. This package is small, so prefer direct, readable code over broad abstractions.
 
@@ -14,7 +14,7 @@ Keep changes centered on the CLI behavior and generated output. This package is 
 - `npm test -- --runInBand` - reliable quick verification when debugging or before committing.
 - `npm run create-new-react-component` - run the local CLI through the npm script.
 - `node index.js` - run the CLI entrypoint directly.
-- `node index.js SmokeTestComponent --lang ts --style scss --with-test --dir /private/tmp/cnrc-smoke` - useful end-to-end generation smoke test pattern.
+- `node index.js SmokeButton SmokeCard --lang ts --style scss --with-test --format --dir /private/tmp/cnrc-smoke` - useful end-to-end batch generation smoke test pattern.
 
 ## Core Files
 
@@ -30,11 +30,13 @@ Keep changes centered on the CLI behavior and generated output. This package is 
 - Component names must be PascalCase.
 - Non-interactive defaults are `functional`, `js`, and `css`.
 - Config precedence is `CLI flags > .cnrc.json > built-in defaults`.
-- `.cnrc.json` supports only the documented fields: `lang`, `style`, `componentType`, `withProps`, `withReactImport`, `withTest`, and `baseDir`.
+- `.cnrc.json` supports only the documented fields: `lang`, `style`, `componentType`, `withProps`, `withReactImport`, `withTest`, `format`, and `baseDir`.
+- Multiple positional component names share one option set and are validated before any files are written.
 - `--dir` creates the component folder under the target directory and creates parent directories when needed.
 - `--style none` should not create or import a style file.
 - Class components always include a React import.
 - `--with-test` creates a sibling `Component.test.jsx` or `Component.test.tsx`.
+- `--format` formats all generated files with the nearest Prettier configuration and is disabled by default.
 - Custom templates are file-based and must continue to pass template safety validation.
 
 ## Development Guidelines
@@ -61,7 +63,7 @@ When a user asks whether generation was tested, treat that as a request for a re
 
 ## Roadmap Context
 
-Previously confirmed shipped capabilities include interactive CLI usage, non-interactive flags, TypeScript/JavaScript output, CSS/SCSS/no-style output, target directories, custom templates, `.cnrc.json`, README badges, `npx` docs, and `--with-test`.
+Previously confirmed shipped capabilities include interactive CLI usage, non-interactive flags, multi-component generation, TypeScript/JavaScript output, CSS/SCSS/no-style output, target directories, custom templates, `.cnrc.json`, README badges, `npx` docs, `--with-test`, and opt-in Prettier formatting.
 
 The roadmap generated during the update-roadmap work should be treated as an evidence-based starting point, not as a substitute for a fresh audit. The repo advanced during that work, so always re-check source, tests, docs, and workflows before moving any item into a release.
 
@@ -76,20 +78,20 @@ The roadmap generated during the update-roadmap work should be treated as an evi
 - Component type variants.
 - `.cnrc.json` project defaults with CLI flags taking precedence.
 - `--with-test` sibling component test generation.
+- Multiple components per command with all-or-nothing prevalidation.
+- `--format` and `.cnrc.json` formatting defaults.
 
 ### Release Plan From Update Roadmap
 
 Use this split when the user asks for roadmap continuation, then refresh it against the current checkout:
 
 - `v1.7.0`: published, config and package quality. This bucket originally covered `.cnrc.json`, package polish, and CI quality work. Since `.cnrc.json` now appears shipped, verify what remains before keeping this bucket open.
-- `v1.8.0`: multi-component generation and formatting. Candidate work includes generating multiple components in one command and optional Prettier integration for generated files.
+- `v1.8.0`: implemented multi-component generation and optional project-aware Prettier formatting.
 - `v1.9.0`: Storybook output and template system v2. Candidate work includes Storybook story generation, `init` scaffolding, and a more capable template system.
-- Post-`v1.7.0`: promotion and adoption work. Keep marketing, examples, and launch polish after the first release-quality implementation slice.
+- Post-`v1.8.0`: promotion and adoption work. Keep marketing, examples, and launch polish after the core implementation slices.
 
 ### Open Candidates To Re-Audit
 
-- Multiple components per command.
-- Prettier integration.
 - Storybook output.
 - `init` scaffolding.
 - Broader Node-version CI matrix. Prior evidence showed the publish workflow only targeted Node 18.

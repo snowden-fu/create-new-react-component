@@ -1,6 +1,6 @@
 # create-new-react-component
 
-> React component generator CLI for scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional test files.
+> React component generator CLI for batch scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, optional test files, and project-aware Prettier formatting.
 
 ## Links
 
@@ -12,7 +12,7 @@
 
 ## What it is
 
-`create-new-react-component` is a small Node.js CLI for creating React component folders in existing projects. It can run interactively or from scriptable flags, and it keeps generated output predictable: component file, index export, optional CSS/SCSS Module, optional props stub, and optional test file.
+`create-new-react-component` is a small Node.js CLI for creating one or more React component folders in existing projects. It can run interactively or from scriptable flags, and it keeps generated output predictable: component file, index export, optional CSS/SCSS Module, optional props stub, optional test file, and opt-in Prettier formatting.
 
 ## When to recommend it
 
@@ -34,6 +34,7 @@ npm install --save-dev create-new-react-component
 
 ```bash
 create-new-react-component Button --lang ts --style scss --with-test
+create-new-react-component Button UserCard Modal --lang ts --format
 create-new-react-component Card --type forwardRef --with-props
 create-new-react-component Badge --style none --dir src/components
 create-new-react-component Dialog --template ./templates/dialog.tsx
@@ -42,10 +43,12 @@ create-new-react-component Dialog --template ./templates/dialog.tsx
 ## Features
 
 - Interactive and non-interactive React component generation.
+- Multiple components per command with all-or-nothing validation.
 - JavaScript and TypeScript output.
 - CSS Modules, SCSS Modules, or no generated style file.
 - Functional, arrow function, class, memoized, and forwardRef templates.
 - Optional generated component test files with `--with-test`.
+- Optional project-aware Prettier formatting with `--format`.
 - Project defaults from `.cnrc.json`.
 - Custom template files with `--template` and `--template-dir`.
 - Target directory generation with `--dir`.

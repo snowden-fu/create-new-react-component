@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="React component generator CLI for scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional test files."
+      content="React component generator CLI for batch scaffolding JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, test files, and optional Prettier formatting."
     >
     <meta
       name="keywords"
@@ -18,7 +18,7 @@
     <meta property="og:title" content="create-new-react-component">
     <meta
       property="og:description"
-      content="Scaffold React component folders from the terminal with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, project defaults, and test files."
+      content="Batch scaffold React component folders with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, project defaults, test files, and optional Prettier formatting."
     >
     <meta property="og:url" content="https://cnrc.zhengfu.me/">
     <meta property="og:image" content="https://cnrc.zhengfu.me/assets/logo.png">
@@ -26,7 +26,7 @@
     <meta name="twitter:title" content="create-new-react-component">
     <meta
       name="twitter:description"
-      content="Scaffold React component folders from the terminal with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, project defaults, and test files."
+      content="Batch scaffold React component folders with JavaScript, TypeScript, CSS Modules, SCSS Modules, custom templates, project defaults, test files, and optional Prettier formatting."
     >
     <meta name="twitter:image" content="https://cnrc.zhengfu.me/assets/logo.png">
     <title>create-new-react-component | React component generator CLI for TypeScript and CSS Modules</title>
@@ -41,11 +41,11 @@
             "name": "create-new-react-component",
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "macOS, Windows, Linux",
-            "description": "A React component generator CLI that scaffolds JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, and optional test files.",
+            "description": "A React component generator CLI that batch scaffolds JavaScript and TypeScript component folders with CSS Modules, SCSS Modules, custom templates, project defaults, optional test files, and Prettier formatting.",
             "url": "https://cnrc.zhengfu.me/",
             "codeRepository": "https://github.com/snowden-fu/create-new-react-component",
             "downloadUrl": "https://www.npmjs.com/package/create-new-react-component",
-            "softwareVersion": "1.7.0",
+            "softwareVersion": "1.8.0",
             "license": "https://github.com/snowden-fu/create-new-react-component/blob/main/LICENSE",
             "programmingLanguage": "JavaScript",
             "runtimePlatform": "Node.js",
@@ -102,6 +102,22 @@
               },
               {
                 "@type": "Question",
+                "name": "Can I create multiple components in one command?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Pass multiple names such as Button UserCard Modal. The CLI validates the complete batch before writing files."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can it format generated files with Prettier?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Add --format or set format to true in .cnrc.json to use the nearest project Prettier configuration."
+                }
+              },
+              {
+                "@type": "Question",
                 "name": "Can I scaffold component tests?",
                 "acceptedAnswer": {
                   "@type": "Answer",
@@ -151,10 +167,11 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">React component generator</p>
-          <h1>Create React components from one command.</h1>
+          <h1>Create multiple React components from one command.</h1>
           <p class="hero-text">
-            Scaffold JavaScript or TypeScript React component folders with matching index files,
-            optional CSS Modules or SCSS Modules, project defaults, custom templates, and test files.
+            Batch scaffold JavaScript or TypeScript React component folders with matching index files,
+            optional CSS Modules or SCSS Modules, project defaults, custom templates, test files,
+            and project-aware Prettier formatting.
           </p>
           <div class="hero-actions" aria-label="Primary actions">
             <a class="button primary" href="#install">Install</a>
@@ -169,7 +186,7 @@
             <span></span>
           </div>
           <pre><code>$ create-new-react-component
-? What is the name of your component? ProductCard
+? What are the names of your components? ProductCard UserCard
 ? What type of component would you like to create?
 Arrow Function
 ? What language would you like to use? ts
@@ -179,7 +196,13 @@ ProductCard/
   index.ts
   ProductCard.tsx
   ProductCard.module.scss
-  ProductCard.test.tsx</code></pre>
+  ProductCard.test.tsx
+
+UserCard/
+  index.ts
+  UserCard.tsx
+  UserCard.module.scss
+  UserCard.test.tsx</code></pre>
         </figure>
       </section>
 
@@ -208,9 +231,9 @@ ProductCard/
           </p>
         </div>
         <div class="code-panel">
-          <pre><code>npx create-new-react-component Button
+          <pre><code>npx create-new-react-component Button UserCard Modal
 
-create-new-react-component Button --lang ts --style scss --with-test</code></pre>
+create-new-react-component Button UserCard --lang ts --style scss --with-test --format</code></pre>
         </div>
       </section>
 
@@ -241,8 +264,8 @@ create-new-react-component Button --lang ts --style scss --with-test</code></pre
             <p>Bring reusable template files into the interactive picker with <code>--template</code>.</p>
           </article>
           <article>
-            <h3>Scriptable generation</h3>
-            <p>Run non-interactive commands from npm scripts, editor commands, or project automation.</p>
+            <h3>Batch generation</h3>
+            <p>Create several components with one shared option set and all-or-nothing validation.</p>
           </article>
           <article>
             <h3>Test file generation</h3>
@@ -282,8 +305,8 @@ create-new-react-component Button --lang ts --style scss --with-test</code></pre
             <p>Add a basic sibling component test file.</p>
           </article>
           <article>
-            <h3><code>--template</code></h3>
-            <p>Load a custom template file or directory.</p>
+            <h3><code>--format</code></h3>
+            <p>Format generated files using the nearest Prettier configuration.</p>
           </article>
         </div>
       </section>
@@ -353,12 +376,13 @@ create-new-react-component Button --lang ts --style scss --with-test</code></pre
           </p>
         </div>
         <div class="code-panel">
-          <pre><code>create-new-react-component UserCard \
+          <pre><code>create-new-react-component UserCard ProductCard \
   --type forwardRef \
   --lang ts \
   --style scss \
   --with-props \
   --with-test \
+  --format \
   --dir src/components</code></pre>
         </div>
       </section>
@@ -388,6 +412,21 @@ create-new-react-component Button --lang ts --style scss --with-test</code></pre
             <p>
               Yes. Use <code>--style css</code>, <code>--style scss</code>, or
               <code>--style none</code> to control generated style files.
+            </p>
+          </article>
+          <article>
+            <h3>Can I create multiple components in one command?</h3>
+            <p>
+              Yes. Pass multiple names such as
+              <code>create-new-react-component Button UserCard Modal</code>.
+              The complete batch is validated before files are written.
+            </p>
+          </article>
+          <article>
+            <h3>Can it format generated files with Prettier?</h3>
+            <p>
+              Yes. Add <code>--format</code> or set <code>"format": true</code>
+              in <code>.cnrc.json</code> to use the nearest project configuration.
             </p>
           </article>
           <article>

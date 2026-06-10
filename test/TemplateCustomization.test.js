@@ -258,6 +258,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withReactImport: true,
         withTest: true,
+        format: true,
         baseDir: 'src/components'
       }));
 
@@ -268,6 +269,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withReactImport: true,
         withTest: true,
+        format: true,
         baseDir: 'src/components'
       });
     });
@@ -300,6 +302,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withReactImport: true,
         withTest: true,
+        format: true,
         baseDir: 'src/components'
       })).toEqual(expect.objectContaining({
         componentType: 'arrow',
@@ -308,6 +311,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withImportReact: true,
         withTest: true,
+        format: true,
         targetDir: path.resolve(process.cwd(), 'src/components')
       }));
     });

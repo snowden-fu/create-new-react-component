@@ -4,7 +4,7 @@
 
 一个用于快速生成 React 组件目录的命令行工具。
 
-`create-new-react-component` 支持交互式创建，也支持可脚本化的命令行参数。它可以生成 JavaScript、TypeScript、CSS Modules、SCSS Modules、props 占位代码、React import，以及常见的组件模板。
+`create-new-react-component` 支持交互式创建，也支持可脚本化的命令行参数。它可以批量生成 JavaScript、TypeScript、CSS Modules、SCSS Modules、props 占位代码、React import，并可选择使用 Prettier 格式化。
 
 适合在已有 React 项目中快速生成组件目录；它不是完整应用脚手架，也不会替代 Vite、Next.js 或 Storybook。
 
@@ -12,11 +12,13 @@
 
 - 交互式创建组件，适合日常开发
 - 非交互式参数，适合脚本、npm scripts 和编辑器集成
+- 支持在一条命令中生成多个组件
 - 支持通过 `.cnrc.json` 设置项目默认值
 - 支持 JavaScript 和 TypeScript 输出
 - 支持 CSS Module 和 SCSS Module 文件生成
 - 支持通过 `--dir` 指定目标目录
 - 支持通过 `--with-test` 生成组件测试文件
+- 支持通过 `--format` 使用项目 Prettier 配置格式化文件
 - 支持 functional、arrow function、class、memoized 和 `forwardRef` 组件模板
 - PascalCase 组件名校验
 - 支持自定义模板文件
@@ -89,6 +91,12 @@ src/components/Button/
 └── index.js
 ```
 
+使用相同参数一次生成多个组件：
+
+```bash
+create-new-react-component Button UserCard Modal --lang ts --style scss --format
+```
+
 ## 交互式模式
 
 不传组件名时，会进入交互式模式：
@@ -99,15 +107,16 @@ create-new-react-component
 
 命令行会依次询问：
 
-1. 组件名称，例如 `Button` 或 `UserProfile`
+1. 一个或多个组件名称，例如 `Button UserProfile` 或 `Button, UserProfile`
 2. 组件类型
 3. 使用 JavaScript 还是 TypeScript
 4. 样式方案
 5. 是否生成 props 占位代码
 6. 是否添加 React import
 7. 是否生成测试文件
+8. 是否使用 Prettier 格式化
 
-组件名必须使用 PascalCase。
+组件名必须使用 PascalCase。CLI 会在写入文件前校验整个批次，因此无效、重复或已存在的组件名不会留下部分生成结果。
 
 ## 示例
 
@@ -135,9 +144,15 @@ create-new-react-component IconButton --style none
 create-new-react-component EmptyState --dir src/components
 ```
 
+使用最近的 Prettier 配置批量生成并格式化组件：
+
+```bash
+create-new-react-component Button UserCard Modal --lang ts --format
+```
+
 ## 非交互式模式
 
-可以在一条命令里传入组件名和参数：
+可以在一条命令里传入一个或多个组件名和共用参数：
 
 ```bash
 create-new-react-component UserCard --type functional --lang js --style css
@@ -145,6 +160,7 @@ create-new-react-component Dialog --type forwardRef --lang ts --style scss --wit
 create-new-react-component Badge --type memoized --style none
 create-new-react-component Button --dir src/components
 create-new-react-component Button --with-test
+create-new-react-component Button UserCard Modal --lang ts --format
 ```
 
 也可以在 `.cnrc.json` 中设置项目默认值：
@@ -156,6 +172,7 @@ create-new-react-component Button --with-test
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "format": true,
   "baseDir": "src/components"
 }
 ```
@@ -171,6 +188,7 @@ create-new-react-component Button --with-test
 | `--with-props` | | 添加 props 参数；TypeScript 模式下会生成 `Props` interface |
 | `--with-react-import` | | 在适用场景下添加 `import React from 'react';` |
 | `--with-test` | | 添加基础的 `Component.test.jsx` 或 `Component.test.tsx` 测试文件 |
+| `--format` | | 使用 Prettier 格式化所有生成文件 |
 | `-t, --template <path>` | 文件路径 | 将自定义模板文件加入交互式模板选择列表 |
 | `--template-dir <path>` | 目录路径 | 将目录中的自定义模板加入交互式模板选择列表 |
 | `-h, --help` | | 查看帮助信息 |
@@ -198,6 +216,7 @@ create-new-react-component Button --with-test
 | `withProps` | `true`, `false` | 默认是否生成 props 占位代码 |
 | `withReactImport` | `true`, `false` | 默认是否生成 React import |
 | `withTest` | `true`, `false` | 默认是否生成组件测试文件 |
+| `format` | `true`, `false` | 默认是否使用 Prettier 格式化 |
 | `baseDir` | 目录路径 | 默认目标目录 |
 
 优先级：
@@ -215,6 +234,7 @@ create-new-react-component Button --with-test
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "format": true,
   "baseDir": "src/components"
 }
 ```
@@ -228,6 +248,8 @@ create-new-react-component Button --lang js --style none --dir lib/ui
 class 组件会自动包含 React import，因为它会继承 `React.Component`。
 
 如果 `--dir` 指向的目录不存在，CLI 会自动创建父级目录。
+
+默认不会格式化输出。启用 `--format` 或设置 `"format": true` 后，CLI 会使用最近的 Prettier 配置和 `.editorconfig` 格式化组件、入口、样式、测试和自定义模板文件；没有项目配置时使用 Prettier 默认值。
 
 ## 生成结果
 

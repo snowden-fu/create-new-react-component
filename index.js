@@ -4,6 +4,7 @@ const commander = require("commander");
 const inquirer = require("inquirer");
 const fs = require("fs");
 const path = require("path");
+const prettier = require("prettier");
 const validateComponentName = require("./ValidateComponentName");
 const packageJson = require("./package.json");
 
@@ -18,6 +19,7 @@ const CONFIG_FIELDS = [
   "withProps",
   "withReactImport",
   "withTest",
+  "format",
   "baseDir"
 ];
 
@@ -94,6 +96,7 @@ function loadProjectConfig(cwd = process.cwd()) {
   validateBoolean("withProps", config.withProps);
   validateBoolean("withReactImport", config.withReactImport);
   validateBoolean("withTest", config.withTest);
+  validateBoolean("format", config.format);
 
   if (config.baseDir !== undefined && typeof config.baseDir !== "string") {
     throw new Error("baseDir must be a string");
@@ -111,6 +114,7 @@ function mergeConfigWithCliOptions(options = {}, config = {}) {
     withProps: options.withProps || config.withProps,
     withReactImport: options.withReactImport || config.withReactImport,
     withTest: options.withTest || config.withTest,
+    format: options.format || config.format,
     template: options.template,
     templateDir: options.templateDir
   };
@@ -148,21 +152,60 @@ function buildComponentOptions(options = {}, config = {}) {
     withProps: Boolean(mergedOptions.withProps),
     withImportReact: Boolean(mergedOptions.withReactImport) || componentType === "class",
     withTest: Boolean(mergedOptions.withTest),
+    format: Boolean(mergedOptions.format),
     targetDir: normalizeTargetDir(mergedOptions.dir),
     customTemplate
   };
 }
 
-function shouldCreateFromOptions(componentName, options) {
+function parseComponentNames(input) {
+  const values = Array.isArray(input) ? input : [input];
+
+  return values
+    .filter((value) => typeof value === "string")
+    .flatMap((value) => value.split(/[\s,]+/))
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function validateComponentBatch(componentNames, targetDir) {
+  if (componentNames.length === 0) {
+    throw new Error("At least one component name is required.");
+  }
+
+  const seenNames = new Set();
+
+  componentNames.forEach((componentName) => {
+    const validation = validateComponentName(componentName);
+
+    if (!validation.isValid) {
+      throw new Error(`${componentName}: ${validation.error}`);
+    }
+
+    if (seenNames.has(componentName)) {
+      throw new Error(`Duplicate component name: ${componentName}`);
+    }
+
+    seenNames.add(componentName);
+
+    const componentDir = path.join(targetDir, componentName);
+    if (fs.existsSync(componentDir)) {
+      throw new Error(`Component ${componentName} already exists in ${targetDir}`);
+    }
+  });
+}
+
+function shouldCreateFromOptions(componentNames, options) {
   return Boolean(
-    componentName ||
+    parseComponentNames(componentNames).length > 0 ||
     options.type ||
     options.lang ||
     options.style ||
     options.dir ||
     options.withProps ||
     options.withReactImport ||
-    options.withTest
+    options.withTest ||
+    options.format
   );
 }
 
@@ -268,13 +311,13 @@ const program = new commander.Command();
 
 program
   .name("create-new-react-component")
-  .usage("[options]")
+  .usage("[componentNames...] [options]")
   .version(packageJson.version)
   .description(
-    "Create a new React component with an optional CSS file. " +
-    "The component will be created in a new directory with the same name as the component."
+    "Create one or more React components with optional style and test files. " +
+    "Each component is created in a directory with the same name."
   )
-  .arguments("[componentName]")
+  .arguments("[componentNames...]")
   .option('-T, --type <type>', 'component type: functional, arrow, class, memoized, or forwardRef')
   .option('-l, --lang <lang>', 'component language: js or ts')
   .option('-s, --style <style>', 'styling solution: css, scss, or none')
@@ -282,15 +325,16 @@ program
   .option('--with-props', 'include a props parameter and TypeScript Props interface')
   .option('--with-react-import', 'include a React import statement')
   .option('--with-test', 'include a basic component test file')
+  .option('--format', 'format generated files with Prettier')
   .option('-t, --template <path>', 'path to custom template file')
   .option('--template-dir <path>', 'path to custom templates directory')
-  .action(async (componentName, options) => {
+  .action(async (componentNames, options) => {
     try {
       const projectConfig = loadProjectConfig();
       const mergedOptions = mergeConfigWithCliOptions(options, projectConfig);
 
-      if (shouldCreateFromOptions(componentName, options)) {
-        createComponent(componentName, buildComponentOptions(options, projectConfig));
+      if (shouldCreateFromOptions(componentNames, options)) {
+        await createComponents(componentNames, buildComponentOptions(options, projectConfig));
         return;
       }
 
@@ -300,21 +344,15 @@ program
       const questions = [
         {
           type: 'input',
-          name: 'componentName',
-          message: 'What is the name of your component?',
+          name: 'componentNames',
+          message: 'What are the names of your components?',
           validate: (input) => {
-            const validation = validateComponentName(input);
-            if (!validation.isValid) {
-              return validation.error;
+            try {
+              validateComponentBatch(parseComponentNames(input), promptTargetDir);
+              return true;
+            } catch (error) {
+              return error.message;
             }
-            
-            // Check if component directory already exists
-            const componentDir = path.join(promptTargetDir, input.trim());
-            if (fs.existsSync(componentDir)) {
-              return `Component directory "${input.trim()}" already exists in ${promptTargetDir}`;
-            }
-            
-            return true;
           }
         }
       ];
@@ -390,18 +428,25 @@ program
           name: 'withTest',
           message: 'Would you like to include a test file?',
           default: Boolean(mergedOptions.withTest)
+        },
+        {
+          type: 'confirm',
+          name: 'format',
+          message: 'Would you like to format generated files with Prettier?',
+          default: Boolean(mergedOptions.format)
         }
       );
 
       const answers = await inquirer.prompt(questions);
 
-      createComponent(answers.componentName, {
+      await createComponents(answers.componentNames, {
         componentType: answers.componentType,
         lang: answers.lang,
         style: answers.style,
         withProps: answers.withProps,
         withImportReact: answers.withImportReact || answers.componentType === 'class',
         withTest: answers.withTest,
+        format: answers.format,
         targetDir: promptTargetDir,
         customTemplate: answers.customTemplate
       });
@@ -410,6 +455,75 @@ program
       process.exit(1);
     }
   });
+
+function getFilesRecursively(directory) {
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = path.join(directory, entry.name);
+    return entry.isDirectory() ? getFilesRecursively(entryPath) : [entryPath];
+  });
+}
+
+async function formatGeneratedFiles(componentDirs) {
+  const generatedFiles = componentDirs.flatMap(getFilesRecursively);
+
+  for (const filePath of generatedFiles) {
+    const config = await prettier.resolveConfig(filePath, { editorconfig: true });
+    const content = fs.readFileSync(filePath, "utf8");
+    const formattedContent = prettier.format(content, {
+      ...config,
+      filepath: filePath
+    });
+
+    fs.writeFileSync(filePath, formattedContent);
+  }
+}
+
+async function createComponents(componentNames, options) {
+  const parsedNames = parseComponentNames(componentNames);
+  const targetDir = options.targetDir || process.cwd();
+  const componentDirs = parsedNames.map((componentName) =>
+    path.join(targetDir, componentName)
+  );
+
+  validateComponentBatch(parsedNames, targetDir);
+
+  try {
+    parsedNames.forEach((componentName) => {
+      createComponent(componentName, { ...options, silent: true });
+    });
+
+    if (options.format) {
+      await formatGeneratedFiles(componentDirs);
+    }
+
+    parsedNames.forEach((componentName) => {
+      logComponentCreated(
+        componentName,
+        path.join(targetDir, componentName),
+        options
+      );
+    });
+
+    return componentDirs;
+  } catch (error) {
+    componentDirs.forEach((componentDir) => {
+      if (fs.existsSync(componentDir)) {
+        fs.rmSync(componentDir, { recursive: true, force: true });
+      }
+    });
+    throw error;
+  }
+}
+
+function logComponentCreated(componentName, componentDir, options) {
+  console.log(
+    `Component ${componentName} created successfully${
+      options.customTemplate
+        ? ` using custom template "${options.customTemplate.name}"`
+        : ` as ${options.componentType} component${options.style ? " with styles" : ""} (${options.lang})`
+    } in ${componentDir}`
+  );
+}
 
 function createComponent(componentName, options) {
   if (!componentName) {
@@ -440,13 +554,9 @@ function createComponent(componentName, options) {
       createComponentFromBuiltInTemplate(trimmedComponentName, componentDir, options);
     }
     
-    console.log(
-      `Component ${trimmedComponentName} created successfully${
-        options.customTemplate 
-          ? ` using custom template "${options.customTemplate.name}"` 
-          : ` as ${options.componentType} component${options.style ? " with styles" : ""} (${options.lang})`
-      } in ${componentDir}`
-    );
+    if (!options.silent) {
+      logComponentCreated(trimmedComponentName, componentDir, options);
+    }
     return componentDir;
   } catch (err) {
     console.error(`Error creating component ${trimmedComponentName}:`, err);
@@ -559,6 +669,10 @@ module.exports = {
   mergeConfigWithCliOptions,
   normalizeTargetDir,
   buildComponentOptions,
+  parseComponentNames,
+  validateComponentBatch,
+  formatGeneratedFiles,
+  createComponents,
   getTestFileContent,
   createComponent
 };
