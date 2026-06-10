@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="用于批量生成 React 组件目录的命令行工具，支持 JavaScript、TypeScript、CSS Modules、SCSS Modules、自定义模板、项目默认配置、测试文件和可选的 Prettier 格式化。"
+    >
+    <meta
+      name="keywords"
+      content="React 组件生成器, React component generator CLI, TypeScript React 组件脚手架, React CLI, CSS Modules, SCSS Modules, 自定义 React 模板, npx create-new-react-component"
+    >
+    <meta name="author" content="Snowden Fu">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cnrc.zhengfu.me/zh-CN/">
+    <link rel="alternate" hreflang="en" href="https://cnrc.zhengfu.me/">
+    <link rel="alternate" hreflang="zh-CN" href="https://cnrc.zhengfu.me/zh-CN/">
+    <link rel="alternate" hreflang="x-default" href="https://cnrc.zhengfu.me/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:title" content="create-new-react-component | React 组件生成器">
+    <meta
+      property="og:description"
+      content="批量生成 JavaScript 或 TypeScript React 组件目录，支持 CSS Modules、SCSS Modules、自定义模板、项目默认配置、测试文件和 Prettier 格式化。"
+    >
+    <meta property="og:url" content="https://cnrc.zhengfu.me/zh-CN/">
+    <meta property="og:image" content="https://cnrc.zhengfu.me/assets/logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="create-new-react-component | React 组件生成器">
+    <meta
+      name="twitter:description"
+      content="批量生成 JavaScript 或 TypeScript React 组件目录，支持样式模块、自定义模板、测试文件和 Prettier 格式化。"
+    >
+    <meta name="twitter:image" content="https://cnrc.zhengfu.me/assets/logo.png">
+    <title>create-new-react-component | TypeScript 和 CSS Modules React 组件生成器</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="alternate" type="text/plain" title="AI 可读的项目摘要" href="https://cnrc.zhengfu.me/llms.txt">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "name": "create-new-react-component",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "macOS, Windows, Linux",
+            "description": "一个用于批量生成 JavaScript 和 TypeScript React 组件目录的命令行工具，支持 CSS Modules、SCSS Modules、自定义模板、项目默认配置、可选测试文件和 Prettier 格式化。",
+            "url": "https://cnrc.zhengfu.me/zh-CN/",
+            "codeRepository": "https://github.com/snowden-fu/create-new-react-component",
+            "downloadUrl": "https://www.npmjs.com/package/create-new-react-component",
+            "softwareVersion": "1.8.0",
+            "license": "https://github.com/snowden-fu/create-new-react-component/blob/main/LICENSE",
+            "programmingLanguage": "JavaScript",
+            "runtimePlatform": "Node.js",
+            "softwareRequirements": "Node.js",
+            "inLanguage": "zh-CN",
+            "author": {
+              "@type": "Person",
+              "name": "Snowden Fu",
+              "url": "https://github.com/snowden-fu"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "create-new-react-component 源代码",
+            "codeRepository": "https://github.com/snowden-fu/create-new-react-component",
+            "programmingLanguage": "JavaScript",
+            "runtimePlatform": "Node.js",
+            "license": "https://github.com/snowden-fu/create-new-react-component/blob/main/LICENSE",
+            "inLanguage": "zh-CN",
+            "targetProduct": {
+              "@type": "SoftwareApplication",
+              "name": "create-new-react-component"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "inLanguage": "zh-CN",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "如何从终端生成 React 组件？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "运行 npx create-new-react-component Button，即可创建包含组件文件和 index 导出的 Button 目录。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "可以生成 TypeScript React 组件吗？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。使用 --lang ts 生成 .tsx 组件文件和 index.ts 导出文件。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "支持 CSS Modules 和 SCSS Modules 吗？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "支持。使用 --style css、--style scss 或 --style none 控制生成的样式文件。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "可以在一条命令中创建多个组件吗？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。传入 Button UserCard Modal 等多个名称。CLI 会在写入文件前验证整个批次。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "可以用 Prettier 格式化生成的文件吗？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。添加 --format，或在 .cnrc.json 中将 format 设置为 true，即可使用最近的项目 Prettier 配置。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "可以生成组件测试文件吗？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。添加 --with-test 可生成同级的 Component.test.jsx 或 Component.test.tsx 文件。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "可以设置项目默认值吗？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。添加 .cnrc.json 文件，为语言、样式、组件类型、测试生成和基础目录等选项设置默认值。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "可以使用自定义组件模板吗？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。使用 --template 指定单个模板文件，或使用 --template-dir 指定可复用模板目录。"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header" aria-label="主导航">
+      <a class="brand" href="#top" aria-label="create-new-react-component 首页">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>create-new-react-component</span>
+      </a>
+      <div class="header-actions">
+        <nav class="nav-links" aria-label="页面章节">
+          <a href="#install">安装</a>
+          <a href="#use-cases">使用场景</a>
+          <a href="#options">参数</a>
+          <a href="#templates">模板</a>
+          <a href="#workflow">工作流</a>
+          <a href="#faq">常见问题</a>
+          <a href="https://github.com/snowden-fu/create-new-react-component">GitHub</a>
+        </nav>
+        <nav class="language-switcher" aria-label="语言">
+          <a href="/" lang="en" hreflang="en">English</a>
+          <a href="/zh-CN/" lang="zh-CN" hreflang="zh-CN" aria-current="page">中文</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">React 组件生成器</p>
+          <h1>一条命令创建多个 React 组件。</h1>
+          <p class="hero-text">
+            批量生成 JavaScript 或 TypeScript React 组件目录及对应的入口文件，
+            可选择 CSS Modules 或 SCSS Modules，并支持项目默认配置、自定义模板、
+            测试文件和项目感知的 Prettier 格式化。
+          </p>
+          <div class="hero-actions" aria-label="主要操作">
+            <a class="button primary" href="#install">安装</a>
+            <a class="button secondary" href="https://www.npmjs.com/package/create-new-react-component">在 npm 查看</a>
+          </div>
+        </div>
+
+        <figure class="terminal-card" aria-label="CLI 预览">
+          <div class="terminal-chrome" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <pre><code>$ create-new-react-component
+? What are the names of your components? ProductCard UserCard
+? What type of component would you like to create?
+Arrow Function
+? What language would you like to use? ts
+? What styling solution would you like to use? scss
+
+ProductCard/
+  index.ts
+  ProductCard.tsx
+  ProductCard.module.scss
+  ProductCard.test.tsx
+
+UserCard/
+  index.ts
+  UserCard.tsx
+  UserCard.module.scss
+  UserCard.test.tsx</code></pre>
+        </figure>
+      </section>
+
+      <section class="section stats" aria-label="项目亮点">
+        <div>
+          <strong>5</strong>
+          <span>种组件模板</span>
+        </div>
+        <div>
+          <strong>2</strong>
+          <span>种输出语言</span>
+        </div>
+        <div>
+          <strong>测试</strong>
+          <span>可选生成组件测试文件</span>
+        </div>
+      </section>
+
+      <section id="install" class="section split">
+        <div>
+          <p class="eyebrow">安装</p>
+          <h2>全局使用，或添加到项目中。</h2>
+          <p>
+            CLI 可以从交互式提示开始，校验 PascalCase 组件名称，
+            然后在当前工作目录或指定目录中写入组件文件夹。
+          </p>
+        </div>
+        <div class="code-panel">
+          <pre><code>npx create-new-react-component Button UserCard Modal
+
+create-new-react-component Button UserCard --lang ts --style scss --with-test --format</code></pre>
+        </div>
+      </section>
+
+      <section id="use-cases" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">使用场景</p>
+          <h2>专注于重复的 React 组件创建工作。</h2>
+          <p>
+            当你需要可重复的组件目录输出，又不想引入完整应用框架、构建工具或设计系统依赖时，
+            可以使用 <code>create-new-react-component</code>。
+          </p>
+        </div>
+        <div class="use-case-grid">
+          <article>
+            <h3>TypeScript 组件脚手架</h3>
+            <p>创建 <code>.tsx</code> 组件、<code>index.ts</code> 导出和可选的 props 占位代码。</p>
+          </article>
+          <article>
+            <h3>CSS 或 SCSS Modules</h3>
+            <p>生成同级 Module 文件，或使用 <code>--style none</code> 创建无样式组件。</p>
+          </article>
+          <article>
+            <h3>团队默认配置</h3>
+            <p>使用 <code>.cnrc.json</code> 统一语言、样式、测试和目录默认值。</p>
+          </article>
+          <article>
+            <h3>自定义模板</h3>
+            <p>通过 <code>--template</code> 将可复用模板文件加入交互式选择列表。</p>
+          </article>
+          <article>
+            <h3>批量生成</h3>
+            <p>使用一组选项创建多个组件，并在写入前完成全有或全无的校验。</p>
+          </article>
+          <article>
+            <h3>生成测试文件</h3>
+            <p>在组件旁添加 <code>Component.test.jsx</code> 或 <code>Component.test.tsx</code>。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="options" class="section split">
+        <div>
+          <p class="eyebrow">CLI 参数</p>
+          <h2>通过命令行参数或配置控制生成结果。</h2>
+          <p>
+            非交互式默认值为 <code>functional</code>、<code>js</code> 和 <code>css</code>。
+            命令行参数优先于 <code>.cnrc.json</code>，配置值优先于内置默认值。
+          </p>
+        </div>
+        <div class="option-grid" aria-label="CLI 参数摘要">
+          <article>
+            <h3><code>--lang js|ts</code></h3>
+            <p>选择 JavaScript 或 TypeScript 组件文件。</p>
+          </article>
+          <article>
+            <h3><code>--style css|scss|none</code></h3>
+            <p>生成 CSS Modules、SCSS Modules，或不生成样式文件。</p>
+          </article>
+          <article>
+            <h3><code>--type</code></h3>
+            <p>使用 functional、arrow、class、memoized 或 forwardRef 模板。</p>
+          </article>
+          <article>
+            <h3><code>--dir</code></h3>
+            <p>在目标目录下创建组件文件夹。</p>
+          </article>
+          <article>
+            <h3><code>--with-test</code></h3>
+            <p>添加基础的同级组件测试文件。</p>
+          </article>
+          <article>
+            <h3><code>--format</code></h3>
+            <p>使用最近的 Prettier 配置格式化生成文件。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="templates" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">模板</p>
+          <h2>选择需要的组件结构。</h2>
+        </div>
+        <div class="template-grid">
+          <article>
+            <h3>Functional</h3>
+            <p>经典的具名函数组件，可选择生成 props。</p>
+          </article>
+          <article>
+            <h3>Arrow</h3>
+            <p>简洁的 <code>const Component = () =&gt; {}</code> 输出。</p>
+          </article>
+          <article>
+            <h3>Class</h3>
+            <p>适用于旧项目的 React class 组件脚手架。</p>
+          </article>
+          <article>
+            <h3>Memoized</h3>
+            <p>使用 <code>React.memo</code> 包装组件，保持稳定的渲染路径。</p>
+          </article>
+          <article>
+            <h3>ForwardRef</h3>
+            <p>创建可将 ref 传递给 DOM 节点的组件。</p>
+          </article>
+          <article>
+            <h3>Custom</h3>
+            <p>加载自己的可复用模板文件或模板目录。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="workflow" class="section split reverse">
+        <div class="file-tree" aria-label="生成的文件树">
+          <pre><code>ComponentName/
++-- index.js | index.ts
++-- ComponentName.jsx | ComponentName.tsx
++-- ComponentName.module.css | .scss
+`-- ComponentName.test.jsx | .tsx</code></pre>
+        </div>
+        <div>
+          <p class="eyebrow">工作流</p>
+          <h2>可预测的文件，生成后即可编辑。</h2>
+          <p>
+            生成的组件遵循简洁的目录约定，让导入保持整洁、样式靠近组件，
+            并可用于 JavaScript 和 TypeScript React 项目。
+          </p>
+          <a class="inline-link" href="https://github.com/snowden-fu/create-new-react-component/blob/main/README.zh-CN.md">
+            阅读完整中文文档
+          </a>
+        </div>
+      </section>
+
+      <section id="why" class="section split">
+        <div>
+          <p class="eyebrow">为什么选择它</p>
+          <h2>足够轻量，适合已有项目。</h2>
+          <p>
+            这个 CLI 适合已有 React 项目、只需要快速建立可预测组件目录约定的团队。
+            它不会引入框架设置，生成内容保持易读，并让每个项目自行决定样式、测试和模板规范。
+          </p>
+        </div>
+        <div class="code-panel">
+          <pre><code>create-new-react-component UserCard ProductCard \
+  --type forwardRef \
+  --lang ts \
+  --style scss \
+  --with-props \
+  --with-test \
+  --format \
+  --dir src/components</code></pre>
+        </div>
+      </section>
+
+      <section id="faq" class="section faq">
+        <div class="section-heading">
+          <p class="eyebrow">常见问题</p>
+          <h2>React 组件生成器的常见问题解答。</h2>
+        </div>
+        <div class="faq-grid">
+          <article>
+            <h3>如何从终端生成 React 组件？</h3>
+            <p>
+              运行 <code>npx create-new-react-component Button</code>，
+              即可创建包含组件文件和入口导出的 <code>Button</code> 目录。
+            </p>
+          </article>
+          <article>
+            <h3>可以生成 TypeScript React 组件吗？</h3>
+            <p>
+              可以。使用 <code>--lang ts</code> 生成 <code>.tsx</code> 组件文件和
+              <code>index.ts</code> 导出文件。
+            </p>
+          </article>
+          <article>
+            <h3>支持 CSS Modules 和 SCSS Modules 吗？</h3>
+            <p>
+              支持。使用 <code>--style css</code>、<code>--style scss</code> 或
+              <code>--style none</code> 控制生成的样式文件。
+            </p>
+          </article>
+          <article>
+            <h3>可以在一条命令中创建多个组件吗？</h3>
+            <p>
+              可以。传入 <code>create-new-react-component Button UserCard Modal</code>
+              等多个名称。CLI 会在写入文件前验证整个批次。
+            </p>
+          </article>
+          <article>
+            <h3>可以用 Prettier 格式化生成的文件吗？</h3>
+            <p>
+              可以。添加 <code>--format</code>，或在 <code>.cnrc.json</code> 中设置
+              <code>"format": true</code>，即可使用最近的项目配置。
+            </p>
+          </article>
+          <article>
+            <h3>可以生成组件测试文件吗？</h3>
+            <p>
+              可以。添加 <code>--with-test</code> 可生成同级的
+              <code>Component.test.jsx</code> 或 <code>Component.test.tsx</code> 文件。
+            </p>
+          </article>
+          <article>
+            <h3>可以设置项目默认值吗？</h3>
+            <p>
+              可以。添加 <code>.cnrc.json</code> 文件，为语言、样式、组件类型、
+              测试生成和基础目录等选项设置默认值。
+            </p>
+          </article>
+          <article>
+            <h3>可以使用自定义组件模板吗？</h3>
+            <p>
+              可以。使用 <code>--template</code> 指定单个模板文件，或使用
+              <code>--template-dir</code> 指定可复用模板目录。
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>MIT 许可证</span>
+      <a href="https://github.com/snowden-fu/create-new-react-component">snowden-fu/create-new-react-component</a>
+    </footer>
+  </body>
+</html>

@@ -52,7 +52,9 @@ a {
 }
 
 .brand,
+.header-actions,
 .nav-links,
+.language-switcher,
 .hero-actions,
 .site-footer {
   align-items: center;
@@ -81,6 +83,30 @@ a {
   color: var(--muted);
   gap: clamp(14px, 3vw, 28px);
   font-size: 0.95rem;
+}
+
+.header-actions {
+  gap: clamp(14px, 2vw, 24px);
+  min-width: 0;
+}
+
+.language-switcher {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  flex: 0 0 auto;
+  font-size: 0.82rem;
+  overflow: hidden;
+}
+
+.language-switcher a {
+  padding: 7px 9px;
+  text-decoration: none;
+}
+
+.language-switcher a[aria-current="page"] {
+  background: var(--ink);
+  color: white;
+  font-weight: 800;
 }
 
 .nav-links a,
@@ -357,6 +383,7 @@ code {
 
 @media (max-width: 900px) {
   .site-header,
+  .header-actions,
   .nav-links,
   .site-footer {
     align-items: flex-start;
@@ -373,6 +400,14 @@ code {
   .nav-links {
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .header-actions {
+    gap: 12px;
+  }
+
+  .language-switcher {
+    align-self: flex-start;
   }
 
   .hero,
