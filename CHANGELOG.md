@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Optional Storybook story generation with `--with-story` and the `.cnrc.json` `withStory` field.
+- Story file formatting support for built-in and custom-template output.
+
 ## [1.8.0] - 2026-06-10
 
 ### Added

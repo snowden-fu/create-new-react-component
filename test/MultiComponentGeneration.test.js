@@ -59,7 +59,7 @@ describe("Multi-component generation", () => {
     expect(fs.existsSync(path.join(tempDir, "FreshCard"))).toBe(false);
   });
 
-  it("creates a batch with shared styles, tests, and target directory", async () => {
+  it("creates a batch with shared styles, tests, stories, and target directory", async () => {
     const targetDir = path.join(tempDir, "src", "components");
 
     const componentDirs = await createComponents(["Button", "UserCard"], {
@@ -69,6 +69,7 @@ describe("Multi-component generation", () => {
       withProps: true,
       withImportReact: false,
       withTest: true,
+      withStory: true,
       targetDir
     });
 
@@ -88,6 +89,9 @@ describe("Multi-component generation", () => {
       expect(
         fs.existsSync(path.join(componentDir, `${componentName}.test.tsx`))
       ).toBe(true);
+      expect(
+        fs.existsSync(path.join(componentDir, `${componentName}.stories.tsx`))
+      ).toBe(true);
       expect(fs.existsSync(path.join(componentDir, "index.ts"))).toBe(true);
     });
   });
@@ -102,6 +106,7 @@ describe("Multi-component generation", () => {
     await createComponents("Button, UserCard", {
       targetDir: tempDir,
       format: true,
+      withStory: true,
       customTemplate: {
         name: "custom-template",
         path: templatePath,
@@ -122,6 +127,12 @@ describe("Multi-component generation", () => {
     ).toBe(
       "const UserCard = () => <div>UserCard</div>;\nexport default UserCard;\n"
     );
+    expect(
+      fs.readFileSync(
+        path.join(tempDir, "UserCard", "UserCard.stories.tsx"),
+        "utf8"
+      )
+    ).toContain("Components/UserCard");
   });
 
   it("formats all generated files with the nearest Prettier config", async () => {
@@ -137,6 +148,7 @@ describe("Multi-component generation", () => {
       withProps: true,
       withImportReact: false,
       withTest: true,
+      withStory: true,
       format: true,
       targetDir: tempDir
     });
@@ -157,6 +169,10 @@ describe("Multi-component generation", () => {
       path.join(tempDir, "Button", "Button.module.css"),
       "utf8"
     );
+    const storyContent = fs.readFileSync(
+      path.join(tempDir, "Button", "Button.stories.tsx"),
+      "utf8"
+    );
 
     expect(componentContent).toContain(
       'import styles from "./Button.module.css";'
@@ -166,6 +182,7 @@ describe("Multi-component generation", () => {
     expect(testContent).toContain(
       'import { render, screen } from "@testing-library/react";'
     );
+    expect(storyContent).toContain('title: "Components/Button"');
     expect(styleContent).toContain(".root {");
   });
 
@@ -220,6 +237,7 @@ describe("Multi-component generation", () => {
         style: "scss",
         componentType: "arrow",
         withTest: true,
+        withStory: true,
         format: true
       })
     );
@@ -239,6 +257,9 @@ describe("Multi-component generation", () => {
     );
     expect(
       fs.existsSync(path.join(tempDir, "UserCard", "UserCard.test.tsx"))
+    ).toBe(true);
+    expect(
+      fs.existsSync(path.join(tempDir, "UserCard", "UserCard.stories.tsx"))
     ).toBe(true);
   });
 });

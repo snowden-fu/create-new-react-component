@@ -19,6 +19,7 @@ const CONFIG_FIELDS = [
   "withProps",
   "withReactImport",
   "withTest",
+  "withStory",
   "format",
   "baseDir"
 ];
@@ -96,6 +97,7 @@ function loadProjectConfig(cwd = process.cwd()) {
   validateBoolean("withProps", config.withProps);
   validateBoolean("withReactImport", config.withReactImport);
   validateBoolean("withTest", config.withTest);
+  validateBoolean("withStory", config.withStory);
   validateBoolean("format", config.format);
 
   if (config.baseDir !== undefined && typeof config.baseDir !== "string") {
@@ -114,6 +116,7 @@ function mergeConfigWithCliOptions(options = {}, config = {}) {
     withProps: options.withProps || config.withProps,
     withReactImport: options.withReactImport || config.withReactImport,
     withTest: options.withTest || config.withTest,
+    withStory: options.withStory || config.withStory,
     format: options.format || config.format,
     template: options.template,
     templateDir: options.templateDir
@@ -152,6 +155,7 @@ function buildComponentOptions(options = {}, config = {}) {
     withProps: Boolean(mergedOptions.withProps),
     withImportReact: Boolean(mergedOptions.withReactImport) || componentType === "class",
     withTest: Boolean(mergedOptions.withTest),
+    withStory: Boolean(mergedOptions.withStory),
     format: Boolean(mergedOptions.format),
     targetDir: normalizeTargetDir(mergedOptions.dir),
     customTemplate
@@ -205,6 +209,7 @@ function shouldCreateFromOptions(componentNames, options) {
     options.withProps ||
     options.withReactImport ||
     options.withTest ||
+    options.withStory ||
     options.format
   );
 }
@@ -325,6 +330,7 @@ program
   .option('--with-props', 'include a props parameter and TypeScript Props interface')
   .option('--with-react-import', 'include a React import statement')
   .option('--with-test', 'include a basic component test file')
+  .option('--with-story', 'include a basic Storybook story file')
   .option('--format', 'format generated files with Prettier')
   .option('-t, --template <path>', 'path to custom template file')
   .option('--template-dir <path>', 'path to custom templates directory')
@@ -431,6 +437,12 @@ program
         },
         {
           type: 'confirm',
+          name: 'withStory',
+          message: 'Would you like to include a Storybook story file?',
+          default: Boolean(mergedOptions.withStory)
+        },
+        {
+          type: 'confirm',
           name: 'format',
           message: 'Would you like to format generated files with Prettier?',
           default: Boolean(mergedOptions.format)
@@ -446,6 +458,7 @@ program
         withProps: answers.withProps,
         withImportReact: answers.withImportReact || answers.componentType === 'class',
         withTest: answers.withTest,
+        withStory: answers.withStory,
         format: answers.format,
         targetDir: promptTargetDir,
         customTemplate: answers.customTemplate
@@ -589,6 +602,9 @@ function createComponentFromCustomTemplate(componentName, componentDir, options)
   if (options.withTest) {
     createTestFile(componentName, componentDir, extension);
   }
+  if (options.withStory) {
+    createStoryFile(componentName, componentDir, extension);
+  }
 }
 
 function getTestFileContent(componentName) {
@@ -610,6 +626,27 @@ function createTestFile(componentName, componentDir, componentExtension) {
   const testFilePath = path.join(componentDir, `${componentName}.test.${testExtension}`);
 
   fs.writeFileSync(testFilePath, getTestFileContent(componentName));
+}
+
+function getStoryFileContent(componentName) {
+  return `import ${componentName} from './${componentName}';
+
+const meta = {
+  title: 'Components/${componentName}',
+  component: ${componentName}
+};
+
+export default meta;
+
+export const Default = {};
+`;
+}
+
+function createStoryFile(componentName, componentDir, componentExtension) {
+  const storyExtension = componentExtension.includes('ts') ? 'tsx' : 'jsx';
+  const storyFilePath = path.join(componentDir, `${componentName}.stories.${storyExtension}`);
+
+  fs.writeFileSync(storyFilePath, getStoryFileContent(componentName));
 }
 
 function createComponentFromBuiltInTemplate(componentName, componentDir, options) {
@@ -651,6 +688,9 @@ function createComponentFromBuiltInTemplate(componentName, componentDir, options
   if (options.withTest) {
     createTestFile(componentName, componentDir, componentExtension);
   }
+  if (options.withStory) {
+    createStoryFile(componentName, componentDir, componentExtension);
+  }
 }
 
 // Only run CLI when executed directly
@@ -674,5 +714,6 @@ module.exports = {
   formatGeneratedFiles,
   createComponents,
   getTestFileContent,
+  getStoryFileContent,
   createComponent
 };

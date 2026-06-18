@@ -21,21 +21,15 @@ boilerplate by hand.
 - Optional project-aware Prettier formatting with `--format`
 - Formatting support for built-in and custom-template output
 
+### Completed toward v1.9.0
+
+- Optional Storybook story generation with `--with-story`
+- JavaScript and TypeScript story files beside generated components
+- `.cnrc.json` default support with `"withStory": true`
+- Story generation for built-in and custom-template output
+- Formatting support for generated story files
+
 ## v1.9.0 - Storybook and Template Setup
-
-### Storybook Generation
-
-- Add a `--with-story` option.
-- Generate `Component.stories.jsx` for JavaScript components.
-- Generate `Component.stories.tsx` for TypeScript components.
-- Support both built-in and custom component templates.
-- Allow `.cnrc.json` to set `"withStory": true`.
-
-Example:
-
-```bash
-create-new-react-component Button --with-story
-```
 
 ### Project Initialization
 
@@ -60,8 +54,6 @@ create-new-react-component init
 
 ### Acceptance Criteria
 
-- Story files are generated correctly for JavaScript and TypeScript.
-- Story generation works during batch creation and with `--format`.
 - Invalid Storybook or init options fail before component files are written.
 - `init` is safe to run in an existing project.
 - English and Chinese documentation cover all new options.

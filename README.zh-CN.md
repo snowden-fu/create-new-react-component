@@ -4,7 +4,7 @@
 
 一个用于快速生成 React 组件目录的命令行工具。
 
-`create-new-react-component` 支持交互式创建，也支持可脚本化的命令行参数。它可以批量生成 JavaScript、TypeScript、CSS Modules、SCSS Modules、props 占位代码、React import，并可选择使用 Prettier 格式化。
+`create-new-react-component` 支持交互式创建，也支持可脚本化的命令行参数。它可以批量生成 JavaScript、TypeScript、CSS Modules、SCSS Modules、props 占位代码、React import、可选测试文件、可选 Storybook story 文件，并可选择使用 Prettier 格式化。
 
 适合在已有 React 项目中快速生成组件目录；它不是完整应用脚手架，也不会替代 Vite、Next.js 或 Storybook。
 
@@ -18,6 +18,7 @@
 - 支持 CSS Module 和 SCSS Module 文件生成
 - 支持通过 `--dir` 指定目标目录
 - 支持通过 `--with-test` 生成组件测试文件
+- 支持通过 `--with-story` 生成 Storybook story 文件
 - 支持通过 `--format` 使用项目 Prettier 配置格式化文件
 - 支持 functional、arrow function、class、memoized 和 `forwardRef` 组件模板
 - PascalCase 组件名校验
@@ -30,6 +31,7 @@
 - 从终端生成 React 组件目录
 - 生成带 CSS Modules 或 SCSS Modules 的 React 组件
 - 通过 CLI 生成 React 组件测试文件
+- 通过 CLI 生成 Storybook story 文件
 - 支持自定义模板的 React 组件生成器
 
 ## 安装
@@ -63,7 +65,7 @@ create-new-react-component
 或者直接通过一条命令生成组件：
 
 ```bash
-create-new-react-component Button --type arrow --lang ts --style scss --with-props --with-test
+create-new-react-component Button --type arrow --lang ts --style scss --with-props --with-test --with-story
 ```
 
 会生成：
@@ -71,6 +73,7 @@ create-new-react-component Button --type arrow --lang ts --style scss --with-pro
 ```text
 Button/
 ├── Button.module.scss
+├── Button.stories.tsx
 ├── Button.test.tsx
 ├── Button.tsx
 └── index.ts
@@ -114,7 +117,8 @@ create-new-react-component
 5. 是否生成 props 占位代码
 6. 是否添加 React import
 7. 是否生成测试文件
-8. 是否使用 Prettier 格式化
+8. 是否生成 Storybook story 文件
+9. 是否使用 Prettier 格式化
 
 组件名必须使用 PascalCase。CLI 会在写入文件前校验整个批次，因此无效、重复或已存在的组件名不会留下部分生成结果。
 
@@ -124,6 +128,12 @@ create-new-react-component
 
 ```bash
 create-new-react-component ProductCard --lang ts --style scss --with-test
+```
+
+生成带 Storybook story 文件的组件：
+
+```bash
+create-new-react-component ProductCard --lang ts --with-story
 ```
 
 生成带 props 占位代码的 `forwardRef` 组件：
@@ -160,6 +170,7 @@ create-new-react-component Dialog --type forwardRef --lang ts --style scss --wit
 create-new-react-component Badge --type memoized --style none
 create-new-react-component Button --dir src/components
 create-new-react-component Button --with-test
+create-new-react-component Button --with-story
 create-new-react-component Button UserCard Modal --lang ts --format
 ```
 
@@ -172,6 +183,7 @@ create-new-react-component Button UserCard Modal --lang ts --format
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "withStory": true,
   "format": true,
   "baseDir": "src/components"
 }
@@ -188,6 +200,7 @@ create-new-react-component Button UserCard Modal --lang ts --format
 | `--with-props` | | 添加 props 参数；TypeScript 模式下会生成 `Props` interface |
 | `--with-react-import` | | 在适用场景下添加 `import React from 'react';` |
 | `--with-test` | | 添加基础的 `Component.test.jsx` 或 `Component.test.tsx` 测试文件 |
+| `--with-story` | | 添加基础的 `Component.stories.jsx` 或 `Component.stories.tsx` story 文件 |
 | `--format` | | 使用 Prettier 格式化所有生成文件 |
 | `-t, --template <path>` | 文件路径 | 将自定义模板文件加入交互式模板选择列表 |
 | `--template-dir <path>` | 目录路径 | 将目录中的自定义模板加入交互式模板选择列表 |
@@ -216,6 +229,7 @@ create-new-react-component Button UserCard Modal --lang ts --format
 | `withProps` | `true`, `false` | 默认是否生成 props 占位代码 |
 | `withReactImport` | `true`, `false` | 默认是否生成 React import |
 | `withTest` | `true`, `false` | 默认是否生成组件测试文件 |
+| `withStory` | `true`, `false` | 默认是否生成 Storybook story 文件 |
 | `format` | `true`, `false` | 默认是否使用 Prettier 格式化 |
 | `baseDir` | 目录路径 | 默认目标目录 |
 
@@ -225,7 +239,7 @@ create-new-react-component Button UserCard Modal --lang ts --format
 命令行参数 > .cnrc.json > 内置默认值
 ```
 
-例如，下面的配置会让 `create-new-react-component Button` 生成 `src/components/Button/Button.tsx`、`Button.module.scss`、`Button.test.tsx` 和 `index.ts`：
+例如，下面的配置会让 `create-new-react-component Button` 生成 `src/components/Button/Button.tsx`、`Button.module.scss`、`Button.test.tsx`、`Button.stories.tsx` 和 `index.ts`：
 
 ```json
 {
@@ -234,6 +248,7 @@ create-new-react-component Button UserCard Modal --lang ts --format
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "withStory": true,
   "format": true,
   "baseDir": "src/components"
 }
@@ -249,7 +264,7 @@ class 组件会自动包含 React import，因为它会继承 `React.Component`�
 
 如果 `--dir` 指向的目录不存在，CLI 会自动创建父级目录。
 
-默认不会格式化输出。启用 `--format` 或设置 `"format": true` 后，CLI 会使用最近的 Prettier 配置和 `.editorconfig` 格式化组件、入口、样式、测试和自定义模板文件；没有项目配置时使用 Prettier 默认值。
+默认不会格式化输出。启用 `--format` 或设置 `"format": true` 后，CLI 会使用最近的 Prettier 配置和 `.editorconfig` 格式化组件、入口、样式、测试、story 和自定义模板文件；没有项目配置时使用 Prettier 默认值。
 
 ## 生成结果
 
@@ -283,6 +298,36 @@ export default Button;
 
 ```ts
 export { default } from './Button';
+```
+
+启用 `--with-test` 后，CLI 还会在组件旁生成测试文件：
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import Button from './Button';
+
+describe('Button', () => {
+  it('renders without crashing', () => {
+    render(<Button />);
+
+    expect(screen).toBeDefined();
+  });
+});
+```
+
+启用 `--with-story` 后，CLI 还会在组件旁生成 Storybook CSF story 文件：
+
+```tsx
+import Button from './Button';
+
+const meta = {
+  title: 'Components/Button',
+  component: Button
+};
+
+export default meta;
+
+export const Default = {};
 ```
 
 ## 组件类型

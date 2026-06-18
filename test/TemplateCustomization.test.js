@@ -209,6 +209,7 @@ const {{ComponentName}} = () => {
         withProps: false,
         withImportReact: false,
         withTest: false,
+        withStory: false,
         targetDir: process.cwd(),
         customTemplate: null
       }));
@@ -227,6 +228,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withImportReact: true,
         withTest: false,
+        withStory: false,
         targetDir: process.cwd(),
         customTemplate: null
       }));
@@ -250,6 +252,12 @@ const {{ComponentName}} = () => {
       }));
     });
 
+    it('should include story generation when requested', () => {
+      expect(buildComponentOptions({ withStory: true })).toEqual(expect.objectContaining({
+        withStory: true
+      }));
+    });
+
     it('should load supported project config fields from .cnrc.json', () => {
       fs.writeFileSync(path.join(tempDir, '.cnrc.json'), JSON.stringify({
         lang: 'ts',
@@ -258,6 +266,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withReactImport: true,
         withTest: true,
+        withStory: true,
         format: true,
         baseDir: 'src/components'
       }));
@@ -269,6 +278,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withReactImport: true,
         withTest: true,
+        withStory: true,
         format: true,
         baseDir: 'src/components'
       });
@@ -302,6 +312,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withReactImport: true,
         withTest: true,
+        withStory: true,
         format: true,
         baseDir: 'src/components'
       })).toEqual(expect.objectContaining({
@@ -311,6 +322,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withImportReact: true,
         withTest: true,
+        withStory: true,
         format: true,
         targetDir: path.resolve(process.cwd(), 'src/components')
       }));
@@ -329,6 +341,7 @@ const {{ComponentName}} = () => {
         style: 'scss',
         withProps: true,
         withTest: true,
+        withStory: true,
         baseDir: 'src/components'
       })).toEqual(expect.objectContaining({
         componentType: 'memoized',
@@ -337,6 +350,7 @@ const {{ComponentName}} = () => {
         withProps: true,
         withImportReact: true,
         withTest: true,
+        withStory: true,
         targetDir: path.resolve(process.cwd(), 'lib/ui')
       }));
     });
@@ -349,12 +363,14 @@ const {{ComponentName}} = () => {
         lang: 'ts',
         componentType: 'forwardRef',
         baseDir: 'src/components',
-        withTest: true
+        withTest: true,
+        withStory: true
       })).toEqual(expect.objectContaining({
         type: 'forwardRef',
         lang: 'js',
         dir: 'components',
-        withTest: true
+        withTest: true,
+        withStory: true
       }));
     });
 

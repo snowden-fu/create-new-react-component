@@ -9,7 +9,7 @@
 
 Generate React component folders from your terminal in a few seconds.
 
-`create-new-react-component` can run as an interactive prompt or as a scriptable CLI command. It supports batch generation, JavaScript, TypeScript, CSS Modules, SCSS Modules, props stubs, React imports, optional Prettier formatting, and several common component templates.
+`create-new-react-component` can run as an interactive prompt or as a scriptable CLI command. It supports batch generation, JavaScript, TypeScript, CSS Modules, SCSS Modules, props stubs, React imports, optional tests, optional Storybook stories, optional Prettier formatting, and several common component templates.
 
 Use it when you want a focused React component generator CLI for an existing project, not a full app scaffold or framework setup.
 
@@ -23,6 +23,7 @@ Use it when you want a focused React component generator CLI for an existing pro
 - CSS Module and SCSS Module file generation
 - Target directory generation with `--dir`
 - Optional component test file generation with `--with-test`
+- Optional Storybook story file generation with `--with-story`
 - Optional project-aware Prettier formatting with `--format`
 - Functional, arrow function, class, memoized, and `forwardRef` templates
 - PascalCase component name validation
@@ -35,12 +36,13 @@ Use it when you want a focused React component generator CLI for an existing pro
 - Generate React component folder from the terminal
 - Scaffold React component with CSS Modules or SCSS Modules
 - Create React component test files from a CLI
+- Create Storybook story files from a CLI
 - Custom template React component generator
 - Project defaults for repeatable React component scaffolding
 
 ## AI and Tooling Summary
 
-`create-new-react-component` is a small Node.js CLI that creates component folders for existing React projects. It is a good fit for scripts, editor commands, and team conventions where developers want predictable component files, index exports, nearby optional styles, project defaults, and optional test files.
+`create-new-react-component` is a small Node.js CLI that creates component folders for existing React projects. It is a good fit for scripts, editor commands, and team conventions where developers want predictable component files, index exports, nearby optional styles, project defaults, optional test files, and optional Storybook stories.
 
 It does not create a full React app, install React, configure build tooling, or replace Vite, Next.js, Storybook, Jest, or Testing Library setup.
 
@@ -80,7 +82,7 @@ create-new-react-component
 Or generate a component directly:
 
 ```bash
-create-new-react-component Button --type arrow --lang ts --style scss --with-props --with-test
+create-new-react-component Button --type arrow --lang ts --style scss --with-props --with-test --with-story
 ```
 
 This creates:
@@ -88,6 +90,7 @@ This creates:
 ```text
 Button/
 ├── Button.module.scss
+├── Button.stories.tsx
 ├── Button.test.tsx
 ├── Button.tsx
 └── index.ts
@@ -120,6 +123,12 @@ Generate a TypeScript component with SCSS Modules and a test file:
 
 ```bash
 create-new-react-component ProductCard --lang ts --style scss --with-test
+```
+
+Generate a component with a Storybook story file:
+
+```bash
+create-new-react-component ProductCard --lang ts --with-story
 ```
 
 Generate a `forwardRef` component with a props stub:
@@ -163,7 +172,8 @@ The prompt asks for:
 5. Props support
 6. React import preference
 7. Test file generation
-8. Prettier formatting
+8. Storybook story generation
+9. Prettier formatting
 
 Component names must be PascalCase. The CLI validates the complete batch before creating files, so invalid, duplicate, or existing component names do not leave partial output.
 
@@ -177,6 +187,7 @@ create-new-react-component Dialog --type forwardRef --lang ts --style scss --wit
 create-new-react-component Badge --type memoized --style none
 create-new-react-component Button --dir src/components
 create-new-react-component Button --with-test
+create-new-react-component Button --with-story
 create-new-react-component Button UserCard Modal --lang ts --format
 ```
 
@@ -189,6 +200,7 @@ You can also set project defaults in `.cnrc.json`:
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "withStory": true,
   "format": true,
   "baseDir": "src/components"
 }
@@ -205,6 +217,7 @@ You can also set project defaults in `.cnrc.json`:
 | `--with-props` | | Adds a props parameter and a TypeScript `Props` interface when using `--lang ts` |
 | `--with-react-import` | | Adds `import React from 'react';` where applicable |
 | `--with-test` | | Adds a basic `Component.test.jsx` or `Component.test.tsx` file |
+| `--with-story` | | Adds a basic `Component.stories.jsx` or `Component.stories.tsx` file |
 | `--format` | | Formats all generated files with Prettier |
 | `-t, --template <path>` | file path | Adds a custom template file to the interactive template picker |
 | `--template-dir <path>` | directory path | Adds all supported custom templates in a directory to the interactive template picker |
@@ -233,6 +246,7 @@ Supported fields:
 | `withProps` | `true`, `false` | Default props stub behavior |
 | `withReactImport` | `true`, `false` | Default React import behavior |
 | `withTest` | `true`, `false` | Default component test file behavior |
+| `withStory` | `true`, `false` | Default Storybook story file behavior |
 | `format` | `true`, `false` | Default Prettier formatting behavior |
 | `baseDir` | directory path | Default target directory |
 
@@ -242,7 +256,7 @@ Precedence is:
 CLI flags > .cnrc.json > built-in defaults
 ```
 
-For example, this config makes `create-new-react-component Button` generate `src/components/Button/Button.tsx`, `Button.module.scss`, `Button.test.tsx`, and `index.ts`:
+For example, this config makes `create-new-react-component Button` generate `src/components/Button/Button.tsx`, `Button.module.scss`, `Button.test.tsx`, `Button.stories.tsx`, and `index.ts`:
 
 ```json
 {
@@ -251,6 +265,7 @@ For example, this config makes `create-new-react-component Button` generate `src
   "componentType": "arrow",
   "withProps": true,
   "withTest": true,
+  "withStory": true,
   "format": true,
   "baseDir": "src/components"
 }
@@ -266,7 +281,7 @@ Class components always include the React import because they extend `React.Comp
 
 When `--dir` points to a directory that does not exist yet, the CLI creates the parent directories automatically.
 
-Formatting is disabled by default. When `--format` or `"format": true` is used, the CLI formats component, index, style, test, and custom-template files using the nearest Prettier configuration and `.editorconfig`, or Prettier defaults when no project configuration exists.
+Formatting is disabled by default. When `--format` or `"format": true` is used, the CLI formats component, index, style, test, story, and custom-template files using the nearest Prettier configuration and `.editorconfig`, or Prettier defaults when no project configuration exists.
 
 ## Generated Output
 
@@ -315,6 +330,21 @@ describe('Button', () => {
     expect(screen).toBeDefined();
   });
 });
+```
+
+With `--with-story`, the CLI also creates a Storybook CSF story file beside the component:
+
+```tsx
+import Button from './Button';
+
+const meta = {
+  title: 'Components/Button',
+  component: Button
+};
+
+export default meta;
+
+export const Default = {};
 ```
 
 ## Component Types
