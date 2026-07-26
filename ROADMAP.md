@@ -31,6 +31,13 @@ boilerplate by hand.
 
 ## v1.9.0 - Storybook and Template Setup
 
+### Release Goals
+
+- Make Storybook output feel complete enough for real project adoption.
+- Give teams a first-run setup path instead of requiring manual config copying.
+- Keep the release focused on component scaffolding, not full app generation.
+- Preserve scriptable CLI behavior for CI, npm scripts, and editor commands.
+
 ### Project Initialization
 
 - Add an `init` command.
@@ -52,10 +59,31 @@ Example:
 create-new-react-component init
 ```
 
+### Template Setup
+
+- Add starter templates that demonstrate the supported template variables.
+- Include JavaScript and TypeScript examples for common component shapes.
+- Keep custom templates file-based and backward compatible with `--template` and
+  `--template-dir`.
+- Document how team-owned templates should be committed to a project.
+
+### Documentation and Examples
+
+- Add a v1.9.0 quick-start path for Storybook-enabled projects.
+- Add example commands for generating one component and multiple components with
+  stories, tests, styles, and formatting.
+- Add a small comparison section that explains when to use this CLI instead of a
+  larger generator.
+- Update npm and README messaging around predictable component folders for
+  teams.
+
 ### Acceptance Criteria
 
 - Invalid Storybook or init options fail before component files are written.
 - `init` is safe to run in an existing project.
+- Generated Storybook files are covered by tests for JavaScript, TypeScript, and
+  no-style output.
+- Starter templates are documented and covered by at least one generation test.
 - English and Chinese documentation cover all new options.
 - Existing tests and supported Node.js versions continue to pass.
 
