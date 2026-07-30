@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Optional Storybook story generation with `--with-story` and the `.cnrc.json` `withStory` field.
 - Story file formatting support for built-in and custom-template output.
+- Experimental AI-powered, read-only `audit` command using the OpenAI Responses API, with evidence-backed terminal and JSON governance reports.
+- Concise-by-default audit reports with impact, effort, risk, line-level evidence, and optional full terminal detail.
 
 ## [1.8.0] - 2026-06-10
 

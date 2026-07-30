@@ -23,6 +23,7 @@
 - 支持 functional、arrow function、class、memoized 和 `forwardRef` 组件模板
 - PascalCase 组件名校验
 - 支持自定义模板文件
+- 实验性的 AI UI 债务审计，用于理解 React 组件系统问题
 
 ## 常见搜索场景
 
@@ -159,6 +160,31 @@ create-new-react-component EmptyState --dir src/components
 ```bash
 create-new-react-component Button UserCard Modal --lang ts --format
 ```
+
+## 实验性 AI UI 债务审计
+
+让 AI 审查已有组件目录中的职责重叠、重复组件 API 和共享底层组件机会：
+
+```bash
+export OPENAI_API_KEY="your-api-key"
+create-new-react-component audit src/components
+```
+
+只读报告通过 OpenAI Responses API 判断组件应该合并、提取共享 primitive，还是保持独立，并提供文件证据、建议 API、受影响调用方、迁移步骤、风险和执行顺序。默认模型是 `gpt-5.6-terra`。
+
+可以输出 JSON 供脚本使用，也可以覆盖默认模型：
+
+```bash
+create-new-react-component audit src/components --json
+create-new-react-component audit src/components --detail full
+create-new-react-component audit src/components --model gpt-5.6-sol
+```
+
+终端默认使用精简模式，只显示价值最高的三项发现，包括影响、工作量、风险、文件与行号证据和下一步动作。使用 `--detail full` 可以查看全部发现、建议 API、调用方、迁移步骤和风险。JSON 输出始终完整，不会被 detail 设置裁剪。
+
+发送请求前，CLI 会显示将发送的文件数和字节数。上下文包括源文件、样式、测试、Storybook story、项目配置和相关调用位置，并忽略依赖、隐藏目录、覆盖率及常见构建输出。超过 200 个文件或 750 KB 时会停止，并要求缩小目标目录。
+
+API Key 只从 `OPENAI_API_KEY` 读取。源代码会发送给 OpenAI 分析，使用前请确认团队的隐私和数据处理要求；API 调用可能产生费用。CLI 不缓存源代码或响应，也不会修改项目文件。
 
 ## 非交互式模式
 

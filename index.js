@@ -7,6 +7,11 @@ const path = require("path");
 const prettier = require("prettier");
 const validateComponentName = require("./ValidateComponentName");
 const packageJson = require("./package.json");
+const {
+  DEFAULT_MODEL,
+  formatAuditReport,
+  runAiAudit
+} = require("./AIAudit");
 
 const COMPONENT_TYPES = ["functional", "arrow", "class", "memoized", "forwardRef"];
 const LANGUAGES = ["js", "ts"];
@@ -693,9 +698,102 @@ function createComponentFromBuiltInTemplate(componentName, componentDir, options
   }
 }
 
+function parseAuditArguments(args) {
+  const options = {
+    detail: "concise",
+    directory: process.cwd(),
+    help: false,
+    json: false,
+    model: DEFAULT_MODEL
+  };
+  let hasDirectory = false;
+
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+
+    if (argument === "--help" || argument === "-h") {
+      options.help = true;
+    } else if (argument === "--json") {
+      options.json = true;
+    } else if (argument === "--detail") {
+      const value = args[index + 1];
+      if (!value || value.startsWith("-")) {
+        throw new Error("--detail requires a value");
+      }
+      if (!["concise", "full"].includes(value)) {
+        throw new Error("--detail must be one of: concise, full");
+      }
+      options.detail = value;
+      index += 1;
+    } else if (argument === "--model") {
+      const value = args[index + 1];
+      if (value === undefined || value.startsWith("-") || !value.trim()) {
+        throw new Error("--model requires a value");
+      }
+      options.model = value;
+      index += 1;
+    } else if (argument.startsWith("-")) {
+      throw new Error(`Unknown audit option: ${argument}`);
+    } else if (hasDirectory) {
+      throw new Error("Audit accepts only one directory");
+    } else {
+      options.directory = path.resolve(process.cwd(), argument);
+      hasDirectory = true;
+    }
+  }
+
+  return options;
+}
+
+async function runAuditCommand(args, dependencies = {}) {
+  const options = parseAuditArguments(args);
+
+  if (options.help) {
+    console.log(`Usage: create-new-react-component audit [directory] [options]
+
+Ask AI to identify React component debt and propose a migration plan.
+
+Options:
+  --json                 print the report as JSON
+  --detail <level>       terminal detail: concise or full (default: concise)
+  --model <model>        OpenAI model (default: ${DEFAULT_MODEL})
+  -h, --help             show audit help`);
+    return null;
+  }
+
+  const result = await runAiAudit({
+    apiKey: dependencies.apiKey || process.env.OPENAI_API_KEY,
+    directory: options.directory,
+    fetchImpl: dependencies.fetchImpl,
+    model: options.model,
+    onContextReady:
+      dependencies.onContextReady ||
+      ((context) => {
+        console.error(
+          `Sending ${context.files.length} files (${context.totalBytes} bytes) to OpenAI for read-only analysis...`
+        );
+      })
+  });
+
+  console.log(
+    options.json
+      ? JSON.stringify(result.report, null, 2)
+      : formatAuditReport(result, options.detail)
+  );
+
+  return result;
+}
+
 // Only run CLI when executed directly
 if (require.main === module) {
-  program.parse(process.argv);
+  if (process.argv[2] === "audit") {
+    runAuditCommand(process.argv.slice(3)).catch((error) => {
+      console.error("Error:", error.message);
+      process.exit(1);
+    });
+  } else {
+    program.parse(process.argv);
+  }
 }
 
 // Export functions for testing
@@ -715,5 +813,7 @@ module.exports = {
   createComponents,
   getTestFileContent,
   getStoryFileContent,
-  createComponent
+  createComponent,
+  parseAuditArguments,
+  runAuditCommand
 };

@@ -5,6 +5,7 @@
   "main": "index.js",
   "files": [
     "index.js",
+    "AIAudit.js",
     "ComponentFileContent.js",
     "ValidateComponentName.js",
     "README.md",

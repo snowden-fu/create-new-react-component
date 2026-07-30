@@ -28,6 +28,7 @@ Use it when you want a focused React component generator CLI for an existing pro
 - Functional, arrow function, class, memoized, and `forwardRef` templates
 - PascalCase component name validation
 - Optional custom template files
+- Experimental AI audit for understanding React component-system debt
 
 ## Common Searches This Solves
 
@@ -154,6 +155,31 @@ Generate and format several components using the nearest Prettier configuration:
 ```bash
 create-new-react-component Button UserCard Modal --lang ts --format
 ```
+
+## Experimental AI UI Debt Audit
+
+Ask AI to review an existing component directory for overlapping responsibilities, duplicated component APIs, and opportunities for a shared primitive:
+
+```bash
+export OPENAI_API_KEY="your-api-key"
+create-new-react-component audit src/components
+```
+
+The read-only report uses the OpenAI Responses API to explain whether components should merge, share a lower-level primitive, or remain separate. It includes file evidence, a proposed API, affected callers, migration steps, risks, and a recommended order. The default model is `gpt-5.6-terra`.
+
+Use JSON output for scripts, or override the model:
+
+```bash
+create-new-react-component audit src/components --json
+create-new-react-component audit src/components --detail full
+create-new-react-component audit src/components --model gpt-5.6-sol
+```
+
+Terminal output is concise by default: it shows the three highest-value findings with impact, effort, risk, file-and-line evidence, and the next action. Use `--detail full` for every finding, proposed API, caller, migration step, and risk. JSON output is always complete and is not shortened by the detail setting.
+
+Before the request, the CLI reports how many files and bytes will be sent. It sends source, styles, tests, stories, project metadata, and related call sites; it ignores dependencies, hidden directories, coverage, and common build output. The command stops above 200 files or 750 KB and asks you to narrow the target.
+
+The API key is read only from `OPENAI_API_KEY`. Source code is sent to OpenAI for analysis, so review your organization's privacy and data-handling requirements before using the command. API usage may incur charges. The CLI does not cache the source or response and never modifies project files.
 
 ## Interactive Mode
 
