@@ -1,6 +1,6 @@
 {
   "name": "create-new-react-component",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "React component generator CLI for batch scaffolding JavaScript and TypeScript components with CSS Modules, custom templates, tests, and Prettier formatting.",
   "main": "index.js",
   "files": [

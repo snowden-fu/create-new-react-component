@@ -28,6 +28,9 @@ boilerplate by hand.
 - `.cnrc.json` default support with `"withStory": true`
 - Story generation for built-in and custom-template output
 - Formatting support for generated story files
+- Safe `init` command for `.cnrc/config.json` and starter templates
+- Backward-compatible layered config loading for `.cnrc/config.json` and `.cnrc.json`
+- Editable JavaScript and TypeScript starter component templates
 
 ## v1.9.0 - Storybook and Template Setup
 
@@ -38,10 +41,10 @@ boilerplate by hand.
 - Keep the release focused on component scaffolding, not full app generation.
 - Preserve scriptable CLI behavior for CI, npm scripts, and editor commands.
 
-### Project Initialization
+### Project Initialization - Implemented
 
-- Add an `init` command.
-- Create a local configuration and template directory:
+- Added an `init` command.
+- Creates a local configuration and template directory:
 
 ```text
 .cnrc/
@@ -49,9 +52,9 @@ boilerplate by hand.
 └── templates/
 ```
 
-- Do not overwrite existing configuration or templates.
-- Keep `.cnrc.json`, `--template`, and `--template-dir` backward compatible.
-- Document the purpose and precedence of `.cnrc.json` and `.cnrc/config.json`.
+- Does not overwrite existing configuration or templates.
+- Keeps `.cnrc.json`, `--template`, and `--template-dir` backward compatible.
+- Documents the purpose and precedence of `.cnrc.json` and `.cnrc/config.json`.
 
 Example:
 

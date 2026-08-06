@@ -117,6 +117,22 @@ Generate several components with the same options:
 create-new-react-component Button UserCard Modal --lang ts --style scss --format
 ```
 
+Initialize project defaults and editable starter templates:
+
+```bash
+create-new-react-component init
+```
+
+This safely creates missing files without overwriting existing setup:
+
+```text
+.cnrc/
+├── config.json
+└── templates/
+    ├── component.jsx
+    └── component.tsx
+```
+
 ## Examples
 
 Generate a TypeScript component with SCSS Modules and a test file:
@@ -191,7 +207,7 @@ create-new-react-component Button --with-story
 create-new-react-component Button UserCard Modal --lang ts --format
 ```
 
-You can also set project defaults in `.cnrc.json`:
+You can also set project defaults in `.cnrc/config.json` or the backward-compatible `.cnrc.json`:
 
 ```json
 {
@@ -234,7 +250,9 @@ Default values in non-interactive mode:
 
 ## Project Config
 
-Add `.cnrc.json` to a project root to set defaults for interactive and direct generation.
+Run `create-new-react-component init` to create `.cnrc/config.json` and editable JavaScript and TypeScript starter templates. Re-running `init` preserves every existing file and only creates missing setup files.
+
+You can also add `.cnrc/config.json` manually. Existing `.cnrc.json` files remain supported for backward compatibility.
 
 Supported fields:
 
@@ -253,7 +271,13 @@ Supported fields:
 Precedence is:
 
 ```text
-CLI flags > .cnrc.json > built-in defaults
+CLI flags > .cnrc/config.json > .cnrc.json > built-in defaults
+```
+
+Use an initialized starter template explicitly with `--template`, for example:
+
+```bash
+create-new-react-component Card --template .cnrc/templates/component.tsx
 ```
 
 For example, this config makes `create-new-react-component Button` generate `src/components/Button/Button.tsx`, `Button.module.scss`, `Button.test.tsx`, `Button.stories.tsx`, and `index.ts`:

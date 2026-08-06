@@ -12,6 +12,8 @@ const COMPONENT_TYPES = ["functional", "arrow", "class", "memoized", "forwardRef
 const LANGUAGES = ["js", "ts"];
 const STYLES = ["css", "scss", "none"];
 const CONFIG_FILE_NAME = ".cnrc.json";
+const CNRC_DIRECTORY_NAME = ".cnrc";
+const CNRC_CONFIG_FILE_NAME = "config.json";
 const CONFIG_FIELDS = [
   "lang",
   "style",
@@ -66,9 +68,7 @@ function validateBoolean(name, value) {
   }
 }
 
-function loadProjectConfig(cwd = process.cwd()) {
-  const configPath = path.join(cwd, CONFIG_FILE_NAME);
-
+function readProjectConfig(configPath, displayName) {
   if (!fs.existsSync(configPath)) {
     return {};
   }
@@ -78,16 +78,16 @@ function loadProjectConfig(cwd = process.cwd()) {
   try {
     config = JSON.parse(fs.readFileSync(configPath, "utf8"));
   } catch (error) {
-    throw new Error(`Failed to read ${CONFIG_FILE_NAME}: ${error.message}`);
+    throw new Error(`Failed to read ${displayName}: ${error.message}`);
   }
 
   if (!config || Array.isArray(config) || typeof config !== "object") {
-    throw new Error(`${CONFIG_FILE_NAME} must contain a JSON object`);
+    throw new Error(`${displayName} must contain a JSON object`);
   }
 
   Object.keys(config).forEach((field) => {
     if (!CONFIG_FIELDS.includes(field)) {
-      throw new Error(`${CONFIG_FILE_NAME} contains unsupported field: ${field}`);
+      throw new Error(`${displayName} contains unsupported field: ${field}`);
     }
   });
 
@@ -105,6 +105,77 @@ function loadProjectConfig(cwd = process.cwd()) {
   }
 
   return config;
+}
+
+function loadProjectConfig(cwd = process.cwd()) {
+  const legacyConfig = readProjectConfig(
+    path.join(cwd, CONFIG_FILE_NAME),
+    CONFIG_FILE_NAME
+  );
+  const cnrcConfig = readProjectConfig(
+    path.join(cwd, CNRC_DIRECTORY_NAME, CNRC_CONFIG_FILE_NAME),
+    path.join(CNRC_DIRECTORY_NAME, CNRC_CONFIG_FILE_NAME)
+  );
+
+  return { ...legacyConfig, ...cnrcConfig };
+}
+
+function getStarterTemplates() {
+  return {
+    "component.jsx": `const {{ComponentName}} = () => {
+  return <div>{{ComponentName}}</div>;
+};
+
+export default {{ComponentName}};
+`,
+    "component.tsx": `interface {{ComponentName}}Props {}
+
+const {{ComponentName}} = (_props: {{ComponentName}}Props) => {
+  return <div>{{ComponentName}}</div>;
+};
+
+export default {{ComponentName}};
+`
+  };
+}
+
+function initializeProject(cwd = process.cwd()) {
+  const cnrcDir = path.join(cwd, CNRC_DIRECTORY_NAME);
+  const templatesDir = path.join(cnrcDir, "templates");
+  const configPath = path.join(cnrcDir, CNRC_CONFIG_FILE_NAME);
+  const created = [];
+  const skipped = [];
+
+  fs.mkdirSync(templatesDir, { recursive: true });
+
+  const files = {
+    [configPath]: `${JSON.stringify({
+      lang: "js",
+      style: "css",
+      componentType: "functional",
+      baseDir: "src/components"
+    }, null, 2)}\n`,
+    ...Object.fromEntries(
+      Object.entries(getStarterTemplates()).map(([fileName, content]) => [
+        path.join(templatesDir, fileName),
+        content
+      ])
+    )
+  };
+
+  Object.entries(files).forEach(([filePath, content]) => {
+    const relativePath = path.relative(cwd, filePath);
+
+    if (fs.existsSync(filePath)) {
+      skipped.push(relativePath);
+      return;
+    }
+
+    fs.writeFileSync(filePath, content, { flag: "wx" });
+    created.push(relativePath);
+  });
+
+  return { created, skipped };
 }
 
 function mergeConfigWithCliOptions(options = {}, config = {}) {
@@ -313,6 +384,29 @@ function replaceTemplateVariables(content, variables) {
 }
 
 const program = new commander.Command();
+
+program
+  .command("init")
+  .description("create project configuration and starter templates in .cnrc")
+  .action(() => {
+    try {
+      const result = initializeProject();
+
+      result.created.forEach((filePath) => {
+        console.log(`Created ${filePath}`);
+      });
+      result.skipped.forEach((filePath) => {
+        console.log(`Skipped existing ${filePath}`);
+      });
+
+      if (result.created.length === 0) {
+        console.log("CNRC project setup is already initialized.");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+      process.exitCode = 1;
+    }
+  });
 
 program
   .name("create-new-react-component")
@@ -705,6 +799,8 @@ module.exports = {
   extractTemplateVariables,
   replaceTemplateVariables,
   validateTemplate,
+  initializeProject,
+  getStarterTemplates,
   loadProjectConfig,
   mergeConfigWithCliOptions,
   normalizeTargetDir,

@@ -160,6 +160,22 @@ create-new-react-component EmptyState --dir src/components
 create-new-react-component Button UserCard Modal --lang ts --format
 ```
 
+初始化项目默认配置和可编辑的 starter templates：
+
+```bash
+create-new-react-component init
+```
+
+该命令只创建缺失文件，不会覆盖已有配置：
+
+```text
+.cnrc/
+├── config.json
+└── templates/
+    ├── component.jsx
+    └── component.tsx
+```
+
 ## 非交互式模式
 
 可以在一条命令里传入一个或多个组件名和共用参数：
@@ -174,7 +190,7 @@ create-new-react-component Button --with-story
 create-new-react-component Button UserCard Modal --lang ts --format
 ```
 
-也可以在 `.cnrc.json` 中设置项目默认值：
+也可以在 `.cnrc/config.json` 或向后兼容的 `.cnrc.json` 中设置项目默认值：
 
 ```json
 {
@@ -217,7 +233,9 @@ create-new-react-component Button UserCard Modal --lang ts --format
 
 ## 项目配置
 
-在项目根目录添加 `.cnrc.json`，即可为交互式和直接生成组件设置默认值。
+运行 `create-new-react-component init` 会创建 `.cnrc/config.json` 以及可编辑的 JavaScript 和 TypeScript starter templates。重复执行 `init` 时会保留所有已有文件，只补齐缺失文件。
+
+也可以手动添加 `.cnrc/config.json`。已有的 `.cnrc.json` 会继续受到支持，保证向后兼容。
 
 支持字段：
 
@@ -236,7 +254,13 @@ create-new-react-component Button UserCard Modal --lang ts --format
 优先级：
 
 ```text
-命令行参数 > .cnrc.json > 内置默认值
+命令行参数 > .cnrc/config.json > .cnrc.json > 内置默认值
+```
+
+可以通过 `--template` 显式使用初始化生成的 starter template，例如：
+
+```bash
+create-new-react-component Card --template .cnrc/templates/component.tsx
 ```
 
 例如，下面的配置会让 `create-new-react-component Button` 生成 `src/components/Button/Button.tsx`、`Button.module.scss`、`Button.test.tsx`、`Button.stories.tsx` 和 `index.ts`：
